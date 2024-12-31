@@ -27,5 +27,6 @@ jobs:
     secrets: inherit
     with:
       matrix: "${{ needs.diff.outputs.matrix }}"
+      publish: false
       # pushImages: false
       # sendNotifications: false

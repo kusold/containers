@@ -16,6 +16,7 @@ on:
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
+  TEST_TAG: test
 
 jobs:
   build-images:
@@ -65,26 +66,27 @@ jobs:
         uses: docker/build-push-action@v6.10.0
         with:
           context: apps/${{ matrix.name }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          load: true # Outputs the built image so it can be used in other steps
+          tags: ${{ matrix.name }}-${{ env.TEST_TAG }}
+
+      - name: Test
+        run: |
+          docker run --rm ${{matrix.name}}-${{ env.TEST_TAG }} ${{matrix.name}} --help
+
+      # The linux/amd64 image is only built once in this workflow.
+      # The image is built once, and the following steps use the
+      # internal cache from the first Build and push step. The
+      # second Build and push step only builds linux/arm64.
+      - name: Build and push
+        uses: docker/build-push-action@v6.10.0
+        with:
+          platforms: linux/amd64,linux/arm64
+          push: ${{ inputs.publish }}
+          context: apps/${{ matrix.name }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      #     file: ${{ matrix.dockerfile }}
-      #     push: ${{ github.event_name != 'pull_request' }}
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     labels: ${{ steps.meta.outputs.labels }}
-      #     cache-from: type=gha
-      #     cache-to: type=gha,mode=max
-      # # Build and push Docker image with Buildx (don't push on PR)
-      # # https://github.com/docker/build-push-action
-      # - name: Build and push Docker image
-      #   id: build-and-push
-      #   uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
-      #   with:
-      #     context: .
-      #     file: ${{ matrix.dockerfile }}
-      #     push: ${{ github.event_name != 'pull_request' }}
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     labels: ${{ steps.meta.outputs.labels }}
-      #     cache-from: type=gha
-      #     cache-to: type=gha,mode=max
