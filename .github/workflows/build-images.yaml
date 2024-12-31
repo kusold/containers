@@ -1,54 +1,29 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: "Build Image"
-
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      matrix:
+        required: false
+        type: string
+        default: "[]"
+      publish:
+        required: false
+        type: boolean
+        default: false
+
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
 
 jobs:
-  changed-files:
-    name: Get Changed Files
+  build-images:
+    name: Build/Test ${{matrix.name}}
     runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.strip-prefix.outputs.all_changed_files }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Get Changed Files
-        id: changed-files
-        uses: tj-actions/changed-files@v45
-        with:
-          files: apps/**
-          dir_names: true
-          dir_names_max_depth: 2
-          matrix: true
-          json: true
-          escape_json: false
-      - name: Strip apps/ prefix
-        id: strip-prefix
-        run: |
-          IMAGES=$( \
-              echo '${{ steps.changed-files.outputs.all_changed_files }}' \
-                  | jq --raw-output --compact-output 'map(sub("^apps/"; ""))' \
-          )
-          echo "all_changed_files=${IMAGES}" >> "$GITHUB_OUTPUT"
-      - name: List all changed files
-        run: echo '${{ steps.strip-prefix.outputs.all_changed_files }}' | jq
-
-  matrix-job:
-    name: Run Matrix Job
-    runs-on: ubuntu-latest
-    needs: [changed-files]
     strategy:
       matrix:
-        files: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
+        name: ${{ fromJSON(inputs.matrix) }}
       max-parallel: 4
       fail-fast: false
     steps:
@@ -56,4 +31,60 @@ jobs:
         uses: actions/checkout@v4
       - name: Test
         run: |
-          echo ${{ matrix.files }}
+          echo ${{ matrix.name }}
+
+      # Allow for more platforms to be built
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # Set up BuildKit Docker container builder to be able to build
+      # multi-platform images and export cache
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.8.0
+
+      # Login against a Docker registry except on PR
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: ${{ inputs.publish }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Extract metadata (tags, labels) for Docker
+      # https://github.com/docker/metadata-action
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5.6.1
+        with:
+          images: ${{ env.REGISTRY }}/${{ matrix.name }}
+
+      # # Build the image
+      - name: Build the Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v6.10.0
+        with:
+          context: apps/${{ matrix.name }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      #     file: ${{ matrix.dockerfile }}
+      #     push: ${{ github.event_name != 'pull_request' }}
+      #     tags: ${{ steps.meta.outputs.tags }}
+      #     labels: ${{ steps.meta.outputs.labels }}
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
+      # # Build and push Docker image with Buildx (don't push on PR)
+      # # https://github.com/docker/build-push-action
+      # - name: Build and push Docker image
+      #   id: build-and-push
+      #   uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
+      #   with:
+      #     context: .
+      #     file: ${{ matrix.dockerfile }}
+      #     push: ${{ github.event_name != 'pull_request' }}
+      #     tags: ${{ steps.meta.outputs.tags }}
+      #     labels: ${{ steps.meta.outputs.labels }}
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
