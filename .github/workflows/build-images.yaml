@@ -58,7 +58,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5.6.1
         with:
-          images: ${{ env.REGISTRY }}/${{ matrix.name }}
+          images: ${{ env.REGISTRY }}/kusold/${{ matrix.name }}
 
       # # Build the image
       - name: Build the Docker image
