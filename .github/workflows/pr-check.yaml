@@ -1,0 +1,32 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: "Check Pull Requests"
+on:
+  pull_request:
+    branches: ["main"]
+    types: ["opened", "synchronize", "reopened"]
+
+concurrency:
+  group: ${{ github.head_ref }}-pr-check
+  cancel-in-progress: true
+
+jobs:
+  # simple-checks:
+  #   uses: onedr0p/containers/.github/workflows/simple-checks.yaml@main
+
+  diff:
+    # uses: kusold/containers/.github/workflows/diff.yaml@main
+    uses: ./.github/workflows/diff.yaml
+
+  build-images:
+    needs: ["diff"]
+    # if: ${{ fromJSON(needs.diff.outputs.matrix).length > 0 }}
+    # if: ${{ fromJSON(needs.diff.outputs.matrix).length > 0 }}
+    # uses: kusold/containers/.github/workflows/build-images.yaml@main
+    uses: ./.github/workflows/build-images.yaml
+    secrets: inherit
+    with:
+      matrix: "${{ needs.diff.outputs.matrix }}"
+      publish: false
+      # pushImages: false
+      # sendNotifications: false
