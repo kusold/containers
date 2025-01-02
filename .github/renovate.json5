@@ -1,16 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
+    "config:recommended",
     ":semanticCommits"
-  ],
-  "regexManagers": [
-    {
-      "fileMatch": ["^containers/apps/.+/metadata\\.yaml$"],
-      "matchStrings": [
-        "version: (?<currentValue>.*?)\\n\\s+datasource: (?<datasource>.*?)\\n\\s+depName: (?<depName>.*?)\\n\\s+versioning: (?<versioning>.*?)\\n"
-      ]
-    }
   ],
   "customManagers": [
     {
