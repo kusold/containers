@@ -1,4 +1,4 @@
-disable=SC2086
+#disable=SC2086
 # SC2086: Double quote to prevent globbing and word splitting.
 # Disabled because it tries to interpret github action subsitutions
 
