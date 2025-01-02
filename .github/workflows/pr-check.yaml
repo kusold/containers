@@ -17,7 +17,7 @@ jobs:
 
   build-images:
     needs: ["diff"]
-    if: ${{ fromJSON(needs.diff.outputs.matrix).length > 0 }}
+    if: ${{ !contains(needs.diff.outputs.matrix, '[]') }}
     uses: kusold/containers/.github/workflows/build-images.yaml@main
     # uses: ./.github/workflows/build-images.yaml
     secrets: inherit
