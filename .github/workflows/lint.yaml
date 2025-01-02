@@ -17,6 +17,13 @@ jobs:
       statuses: write
 
     steps:
+      - name: Get GitHub token
+        id: get_token
+        uses: actions/create-github-app-token@v1
+        with:
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.GH_APP_ID }}
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -28,10 +35,11 @@ jobs:
         uses: super-linter/super-linter@v7.2.1
         env:
           # To report GitHub Actions status checks
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: "${{ steps.get_token.outputs.token }}"
           LINTER_RULES_PATH: .github/lint_rules
           FIX_JSONC: true
           FIX_JSON: true
+          FIX_JSONC_PRETTIER: true
           GITHUB_ACTIONS_CONFIG_FILE: actionlint.yaml
 
       - name: Commit and push linting fixes

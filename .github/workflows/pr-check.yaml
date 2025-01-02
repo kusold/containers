@@ -14,6 +14,7 @@ jobs:
   lint:
     # uses: kusold/containers/.github/workflows/lint.yaml@main
     uses: ./.github/workflows/lint.yaml
+    secrets: inherit
 
   diff:
     uses: kusold/containers/.github/workflows/diff.yaml@main
