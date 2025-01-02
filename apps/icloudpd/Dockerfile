@@ -7,4 +7,5 @@ RUN apk add --no-cache \
 
 RUN useradd -m icloudpd
 USER icloudpd
+
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=10 CMD [ "curl -f http://localhost:8080 || exit 1" ]
