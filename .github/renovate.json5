@@ -1,62 +1,51 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base",
-    ":semanticCommits"
-  ],
-  "regexManagers": [
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:recommended", ":semanticCommits"],
+  customManagers: [
     {
-      "fileMatch": ["^containers/apps/.+/metadata\\.yaml$"],
-      "matchStrings": [
-        "version: (?<currentValue>.*?)\\n\\s+datasource: (?<datasource>.*?)\\n\\s+depName: (?<depName>.*?)\\n\\s+versioning: (?<versioning>.*?)\\n"
-      ]
-    }
+      customType: "regex",
+      description: "Update _VERSION variables in Dockerfiles",
+      fileMatch: ["(^|/|\\.)Dockerfile$", "(^|/)Dockerfile\\.[^/]*$"],
+      matchStrings: [
+        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s(?:ENV|ARG) .+?_VERSION=(?<currentValue>.+?)\\s",
+      ],
+    },
   ],
-  "customManagers": [
+  packageRules: [
     {
-      "customType": "regex",
-      "description": "Update _VERSION variables in Dockerfiles",
-      "fileMatch": ["(^|/|\\.)Dockerfile$", "(^|/)Dockerfile\\.[^/]*$"],
-      "matchStrings": [
-        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s(?:ENV|ARG) .+?_VERSION=(?<currentValue>.+?)\\s"
-      ]
-    }
-  ],
-  "packageRules": [
-    {
-      "addLabels": ["renovate/container", "type/major"],
-      "additionalBranchPrefix": "{{parentDir}}-",
-      "commitMessageExtra": " ( {{currentVersion}} → {{newVersion}} )",
-      "commitMessagePrefix": "feat({{parentDir}})!: ",
-      "commitMessageTopic": "{{depName}}",
-      "labels": ["apps/{{parentDir}}"],
-      "matchDatasources": ["docker"],
-      "matchFileNames": ["apps/**/Dockerfile"],
-      "matchUpdateTypes": ["major"]
+      addLabels: ["renovate/container", "type/major"],
+      additionalBranchPrefix: "{{parentDir}}-",
+      commitMessageExtra: " ( {{currentVersion}} → {{newVersion}} )",
+      commitMessagePrefix: "feat({{parentDir}})!: ",
+      commitMessageTopic: "{{depName}}",
+      labels: ["apps/{{parentDir}}"],
+      matchDatasources: ["docker"],
+      matchFileNames: ["apps/**/Dockerfile"],
+      matchUpdateTypes: ["major"],
     },
     {
-      "addLabels": ["renovate/container", "type/minor"],
-      "additionalBranchPrefix": "{{parentDir}}-",
-      "commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )",
-      "commitMessageTopic": "{{depName}}",
-      "labels": ["apps/{{parentDir}}"],
-      "matchDatasources": ["docker"],
-      "matchFileNames": ["apps/**/Dockerfile"],
-      "matchUpdateTypes": ["minor"],
-      "semanticCommitScope": "{{parentDir}}",
-      "semanticCommitType": "feat"
+      addLabels: ["renovate/container", "type/minor"],
+      additionalBranchPrefix: "{{parentDir}}-",
+      commitMessageExtra: "( {{currentVersion}} → {{newVersion}} )",
+      commitMessageTopic: "{{depName}}",
+      labels: ["apps/{{parentDir}}"],
+      matchDatasources: ["docker"],
+      matchFileNames: ["apps/**/Dockerfile"],
+      matchUpdateTypes: ["minor"],
+      semanticCommitScope: "{{parentDir}}",
+      semanticCommitType: "feat",
     },
     {
-      "addLabels": ["renovate/container", "type/patch"],
-      "additionalBranchPrefix": "{{parentDir}}-",
-      "commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )",
-      "commitMessageTopic": "{{depName}}",
-      "labels": ["apps/{{parentDir}}"],
-      "matchDatasources": ["docker"],
-      "matchFileNames": ["apps/**/Dockerfile"],
-      "matchUpdateTypes": ["patch"],
-      "semanticCommitScope": "{{parentDir}}",
-      "semanticCommitType": "fix"
-    }
-  ]
+      addLabels: ["renovate/container", "type/patch"],
+      additionalBranchPrefix: "{{parentDir}}-",
+      commitMessageExtra: "( {{currentVersion}} → {{newVersion}} )",
+      commitMessageTopic: "{{depName}}",
+      labels: ["apps/{{parentDir}}"],
+      matchDatasources: ["docker"],
+      matchFileNames: ["apps/**/Dockerfile"],
+      matchUpdateTypes: ["patch"],
+      semanticCommitScope: "{{parentDir}}",
+      semanticCommitType: "fix",
+    },
+  ],
 }

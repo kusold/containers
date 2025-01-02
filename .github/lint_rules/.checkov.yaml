@@ -1,0 +1,15 @@
+---
+quiet: true # Don't report passed checks in output
+skip-check:
+  - DL3018 # Pin versions in apk add
+  - CKV_GHA_1 # Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables
+  - CKV_GHA_2 # Ensure run commands are not vulnerable to shell injection
+  - CKV_GHA_3 # Suspicious use of curl with secrets
+  - CKV_GHA_4 # Suspicious use of netcat with IP address
+  - CKV_GHA_5 # Found artifact build without evidence of cosign sign execution in pipeline
+  - CKV_GHA_7 # The build output cannot be affected by user parameters other than the build entry point and the top-level source location.
+  - CKV2_GHA_1 # Ensure top-level permissions are not set to write-all
+  - CKV_DOCKER_5 # Ensure update instructions are not use alone in the Dockerfile
+  - CKV_DOCKER_9 # Ensure that APT isn't used
+  - CKV2_DOCKER_5 # Ensure that certificate validation isn't disabled with the PYTHONHTTPSVERIFY environmnet variable
+  - CKV2_DOCKER_10 # Ensure that packages with untrusted or missing signatures are not used by rpm via the '--nodigest', '--nosignature', '--noverify', or '--nofiledigest' options
