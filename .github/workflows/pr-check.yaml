@@ -11,6 +11,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lint:
+    # uses: kusold/containers/.github/workflows/lint.yaml@main
+    uses: ./.github/workflows/lint.yaml
+
   diff:
     uses: kusold/containers/.github/workflows/diff.yaml@main
     # uses: ./.github/workflows/diff.yaml
