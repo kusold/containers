@@ -89,21 +89,18 @@ jobs:
             echo "version=${VERSION}"
             echo "major=${MAJOR_VERSION}"
             echo "major_minor=${MAJOR_MINOR_VERSION}"
-          } >> $GITHUB_OUTPUT
 
-          {
             echo "tags<<EOF"
             echo "${{ env.REGISTRY}}/${{github.repository_owner}}/${{ matrix.name }}:${MAJOR_VERSION}"
             echo "${{ env.REGISTRY}}/${{github.repository_owner}}/${{ matrix.name }}:${MAJOR_MINOR_VERSION}"
             echo "${{ env.REGISTRY}}/${{github.repository_owner}}/${{ matrix.name }}:${VERSION}"
             echo "EOF"
-          } >> $GITHUB_OUTPUT
 
-          {
             echo "labels<<EOF"
             echo "${{ steps.meta.outputs.labels }}"
             echo "org.opencontainers.image.version=${VERSION}"
             echo "EOF"
+
           } >> $GITHUB_OUTPUT
 
       - name: Build the Docker image
