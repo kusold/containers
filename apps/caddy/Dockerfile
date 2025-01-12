@@ -1,4 +1,4 @@
-# renovate: datasource=docker packageName=library/caddy versioning=docker
+# renovate: datasource=docker packageName=caddy versioning=docker
 ARG CADDY_VERSION=2.8.4
 
 FROM caddy:${CADDY_VERSION}-builder AS builder
