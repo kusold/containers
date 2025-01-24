@@ -105,7 +105,7 @@ jobs:
 
       - name: Build the Docker image
         id: build-and-push
-        uses: docker/build-push-action@v6.12.0
+        uses: docker/build-push-action@v6.13.0
         with:
           context: apps/${{ matrix.name }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -123,7 +123,7 @@ jobs:
       # internal cache from the first Build and push step. The
       # second Build and push step only builds linux/arm64.
       - name: Build and push
-        uses: docker/build-push-action@v6.12.0
+        uses: docker/build-push-action@v6.13.0
         with:
           platforms: linux/amd64,linux/arm64
           push: ${{ inputs.publish }}
