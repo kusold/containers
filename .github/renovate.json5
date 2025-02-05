@@ -53,5 +53,15 @@
       semanticCommitScope: "{{parentDir}}",
       semanticCommitType: "fix",
     },
+    {
+      "description": "Disable digest pinning for regex managers in Dockerfile",
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchDatasources": [
+        "docker"
+      ],
+      "pinDigests": false,
+    },
   ],
 }
