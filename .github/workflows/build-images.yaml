@@ -76,14 +76,33 @@ jobs:
         if: ${{ inputs.publish }}
         id: publish-tags
         run: |
+          set -x # Enable debug mode to see each command as it's executed
+          echo "Determing version for ${{ matrix.name }}"
+
           UPPER_NAME=$(echo "${{ matrix.name }}" | tr '[:lower:]' '[:upper:]')
-          VERSION=$(grep -oP "(?<=ARG ${UPPER_NAME}_VERSION=)[\"']?\K[^\"']*(?=[\"']?)" apps/${{ matrix.name }}/Dockerfile)
+
+          echo "Looking for version with pattern: ARG ${UPPER_NAME}_VERSION="
+          VERSION=$(grep -oP "(?<=ARG ${UPPER_NAME}_VERSION=)[\"']?\K[^\"']*(?=[\"']?)" apps/${{ matrix.name }}/Dockerfile || true)
+
           if [ -z "$VERSION" ]; then
-            echo "Error: Could not find version in Dockerfile"
-            exit 1
+            echo "The version isn't set. Checking if the image is debian based"
+
+            VERSION=$(grep -m1 -oP '^(?!#).*FROM debian:\K[^[:space:]]*' apps/${{ matrix.name }}/Dockerfile || true)
+
+            if [ -z "$VERSION" ]; then
+              echo "Error: Could not find version in Dockerfile"
+              exit 1
+            fi
+
+            # The version is set to the debian version
+            echo "Found debian version ${VERSION}"
+            MAJOR_VERSION=$(echo $VERSION | cut -d- -f1)  # gets 'bookworm'
+            MAJOR_MINOR_VERSION=$VERSION                 # same as full version
+          else
+            # The version is specified as an arg
+            MAJOR_VERSION=$(echo $VERSION | cut -d. -f1)
+            MAJOR_MINOR_VERSION=$(echo $VERSION | cut -d. -f1,2)
           fi
-          MAJOR_VERSION=$(echo $VERSION | cut -d. -f1)
-          MAJOR_MINOR_VERSION=$(echo $VERSION | cut -d. -f1,2)
 
           {
             echo "version=${VERSION}"
