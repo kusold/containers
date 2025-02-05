@@ -62,7 +62,7 @@ jobs:
     steps:
       - name: Get GitHub token
         id: get_token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@67e27a7eb7db372a1c61a7f9bdab8699e9ee57f7 # v1
         with:
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           app-id: ${{ secrets.GH_APP_ID }}
@@ -73,7 +73,7 @@ jobs:
       #     username: ${{ secrets.DOCKERHUB_USERNAME }}
       #     password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       # This third party action allows you to download the cache artifact from different workflow runs
       # Note that actions/cache doesn't work well because the cache key would need to be computed from
@@ -81,7 +81,7 @@ jobs:
       # cache wouldn't necessarily upload when it changes. actions/download-artifact also doesn't work
       # because it only handles artifacts uploaded in the same run, and we want to restore from the
       # previous successful run.
-      - uses: dawidd6/action-download-artifact@v8
+      - uses: dawidd6/action-download-artifact@20319c5641d495c8a52e688b7dc5fada6c3a9fbc # v8
         if: github.event.inputs.repoCache != 'disabled'
         continue-on-error: true
         with:
@@ -111,7 +111,7 @@ jobs:
           ls -R $cache_dir
 
       - name: Renovate Bot GitHub Action
-        uses: renovatebot/github-action@v41.0.12
+        uses: renovatebot/github-action@9ad1a8e771c002ece340d1ff028fae4503fe041b # v41.0.12
         with:
           token: "${{ steps.get_token.outputs.token }}"
           configurationFile: .github/renovate.json5
@@ -136,7 +136,7 @@ jobs:
           # To solve *that*, we'd have to extract to root (/), which isn't safe.
           tar -czvf $cache_archive -C $cache_dir .
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4
         if: github.event.inputs.repoCache != 'disabled'
         with:
           name: ${{ env.cache_key }}
