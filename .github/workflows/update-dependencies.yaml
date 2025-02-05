@@ -12,6 +12,16 @@ on:
           - enabled
           - disabled
           - reset
+      logLevel:
+        description: "Sets the logging level for Renovate"
+        type: choice
+        default: info
+        options:
+          - debug
+          - info
+          - warn
+          - error
+          - fatal
       dryRun:
         description: "Dry Run Renovate"
         type: boolean
@@ -111,7 +121,7 @@ jobs:
           RENOVATE_AUTODISCOVER_FILTER: "${{ github.repository }}"
           RENOVATE_DRY_RUN: "${{ inputs.dryRun == true }}"
           RENOVATE_PLATFORM: github
-          # LOG_LEVEL: "${{ inputs.logLevel || 'debug' }}"
+          LOG_LEVEL: "${{ inputs.logLevel || 'info' }}"
           # RENOVATE_PLATFORM_COMMIT: true
           # RENOVATE_REPOSITORY_CACHE: "disabled"
           # DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
