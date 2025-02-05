@@ -63,5 +63,15 @@
       ],
       "pinDigests": false,
     },
+    {
+      "description": "Disable digest pinning problematic Dockerfiles",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchFileNames": [
+        "apps/caddy/Dockerfile"
+      ],
+      "pinDigests": false,
+    },
   ],
 }
