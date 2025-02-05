@@ -19,20 +19,20 @@ jobs:
     steps:
       - name: Get GitHub token
         id: get_token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@67e27a7eb7db372a1c61a7f9bdab8699e9ee57f7 # v1
         with:
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
           app-id: ${{ secrets.GH_APP_ID }}
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           # super-linter needs the full git history to get the
           # list of files that changed across commits
           fetch-depth: 0
 
       - name: Super-linter
-        uses: super-linter/super-linter@v7.2.1
+        uses: super-linter/super-linter@85f7611e0f7b53c8573cca84aa0ed4344f6f6a4d # v7.2.1
         env:
           # To report GitHub Actions status checks
           GITHUB_TOKEN: "${{ steps.get_token.outputs.token }}"
@@ -49,7 +49,7 @@ jobs:
         if: >
           github.event_name == 'pull_request' &&
           github.ref_name != github.event.repository.default_branch
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@e348103e9026cc0eee72ae06630dbe30c8bf7a79 # v5
         with:
           branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
           commit_message: "chore: fix linting issues"
