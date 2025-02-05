@@ -54,24 +54,16 @@
       semanticCommitType: "fix",
     },
     {
-      "description": "Disable digest pinning for regex managers in Dockerfile",
-      "matchManagers": [
-        "custom.regex"
-      ],
-      "matchDatasources": [
-        "docker"
-      ],
-      "pinDigests": false,
+      description: "Disable digest pinning for regex managers in Dockerfile",
+      matchManagers: ["custom.regex"],
+      matchDatasources: ["docker"],
+      pinDigests: false,
     },
     {
-      "description": "Disable digest pinning problematic Dockerfiles",
-      "matchDatasources": [
-        "docker"
-      ],
-      "matchFileNames": [
-        "apps/caddy/Dockerfile"
-      ],
-      "pinDigests": false,
+      description: "Disable digest pinning problematic Dockerfiles",
+      matchDatasources: ["docker"],
+      matchFileNames: ["apps/caddy/Dockerfile"],
+      pinDigests: false,
     },
   ],
 }
