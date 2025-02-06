@@ -37,7 +37,7 @@ jobs:
 
       # Allow for more platforms to be built
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@53851d14592bedcffcf25ea515637cff71ef929a # v3
+        uses: docker/setup-qemu-action@4574d27a4764455b42196d70a065bc6853246a25 # v3
 
       # Set up BuildKit Docker container builder to be able to build
       # multi-platform images and export cache
