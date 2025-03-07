@@ -79,7 +79,7 @@ jobs:
           set -x # Enable debug mode to see each command as it's executed
           echo "Determing version for ${{ matrix.name }}"
 
-          UPPER_NAME=$(echo "${{ matrix.name }}" | tr '[:lower:]' '[:upper:]')
+          UPPER_NAME=$(echo "${{ matrix.name }}" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
 
           echo "Looking for version with pattern: ARG ${UPPER_NAME}_VERSION="
           VERSION=$(grep -oP "(?<=ARG ${UPPER_NAME}_VERSION=)[\"']?\K[^\"']*(?=[\"']?)" apps/${{ matrix.name }}/Dockerfile || true)
