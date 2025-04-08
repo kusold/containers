@@ -25,4 +25,5 @@ RUN curl --verbose --location --output shreddit.tar.gz https://github.com/andrew
 FROM debian:bullseye-slim
 COPY --from=builder --chown=nobody:nogroup /shreddit /shreddit
 USER nobody:nogroup
-ENTRYPOINT [ "/shreddit/shreddit" ]
+ENV PATH="/shreddit:$PATH"
+CMD [ "/shreddit/shreddit" ]
