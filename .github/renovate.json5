@@ -40,6 +40,7 @@
       matchUpdateTypes: ["minor"],
       semanticCommitScope: "{{parentDir}}",
       semanticCommitType: "feat",
+      automerge: true,
     },
     {
       addLabels: ["renovate/container", "type/patch"],
@@ -52,6 +53,7 @@
       matchUpdateTypes: ["patch"],
       semanticCommitScope: "{{parentDir}}",
       semanticCommitType: "fix",
+      automerge: true,
     },
     {
       description: "Disable digest pinning for regex managers in Dockerfile",
