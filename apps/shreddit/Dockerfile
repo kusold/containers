@@ -1,5 +1,5 @@
 # renovate: datasource=github-releases packageName=andrewbanchich/shreddit versioning=semver-coerced
-ARG SHREDDIT_VERSION=1.0.2
+ARG SHREDDIT_VERSION=1.1.0
 
 FROM rust:1.86.0-slim-bullseye AS builder
 ARG SHREDDIT_VERSION
