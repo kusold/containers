@@ -21,6 +21,7 @@ RUN curl --verbose --location --output shreddit.tar.gz https://github.com/andrew
     && cp /src/target/release/shreddit /shreddit/shreddit \
     && ls -al /shreddit
 
+# checkov:skip=CKV_DOCKER_2:don't need a healthcheck for a cli tool
 FROM debian:bullseye-slim
 COPY --from=builder --chown=nobody:nogroup /shreddit /shreddit
 USER nobody:nogroup
