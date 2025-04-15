@@ -1,5 +1,5 @@
 # renovate: datasource=docker packageName=icloudpd/icloudpd versioning=docker
-ARG ICLOUDPD_VERSION=1.27.2@sha256:b33b5852757868de8fcea4e6a8e95113bd64ee3dc27d2b2ccb6363145dfbc431
+ARG ICLOUDPD_VERSION=1.27.3@sha256:3c9e9d23b13103b9a19db6e0c050dc5d32074365dbcb4c63edc8d1ee3b395495
 
 FROM icloudpd/icloudpd:${ICLOUDPD_VERSION}
 RUN apk add --no-cache \
