@@ -1,7 +1,7 @@
 # renovate: datasource=github-releases packageName=andrewbanchich/shreddit versioning=semver-coerced
 ARG SHREDDIT_VERSION=1.1.1
 
-FROM rust:1.87.0-slim-bullseye@sha256:893265770690a59e3ad1e91d107c08383b174fdf60cd8f58cdfe0b12550f9a90 AS builder
+FROM rust:1.87.0-slim-bullseye@sha256:c8bfa46d68a20e878e316e8302790d5f8c7410c56e35b562507d50f2bec64dd7 AS builder
 ARG SHREDDIT_VERSION
 
 RUN mkdir -p /shreddit \
