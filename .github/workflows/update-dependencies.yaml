@@ -73,7 +73,7 @@ jobs:
       #     username: ${{ secrets.DOCKERHUB_USERNAME }}
       #     password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
 
       # This third party action allows you to download the cache artifact from different workflow runs
       # Note that actions/cache doesn't work well because the cache key would need to be computed from
