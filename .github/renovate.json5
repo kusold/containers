@@ -15,12 +15,6 @@
   ],
   packageRules: [
     {
-      description: "Auto-merge all digest updates regardless of package type",
-      matchUpdateTypes: ["digest", "pinDigest"],
-      automerge: true,
-      automergeType: "pr",
-    },
-    {
       matchUpdateTypes: ["minor", "patch"],
       matchManagers: ["github-actions"],
       automerge: true,
