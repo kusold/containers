@@ -1,6 +1,8 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: ["config:best-practices", ":semanticCommits", ":automergeDigest"],
+  automergeType: "pr",
+  platformAutomerge: true,
   customManagers: [
     {
       customType: "regex",
@@ -15,8 +17,15 @@
     {
       matchUpdateTypes: ["minor", "patch"],
       matchManagers: ["github-actions"],
-      matchCurrentVersion: "!/^0/",
       automerge: true,
+      automergeType: "pr",
+    },
+    {
+      description: "Auto-merge GitHub Actions digest updates",
+      matchUpdateTypes: ["digest", "pinDigest"],
+      matchManagers: ["github-actions"],
+      automerge: true,
+      automergeType: "pr",
     },
     {
       addLabels: ["renovate/container", "type/major"],
@@ -41,6 +50,7 @@
       semanticCommitScope: "{{parentDir}}",
       semanticCommitType: "feat",
       automerge: true,
+      automergeType: "pr",
     },
     {
       addLabels: ["renovate/container", "type/patch"],
@@ -54,6 +64,7 @@
       semanticCommitScope: "{{parentDir}}",
       semanticCommitType: "fix",
       automerge: true,
+      automergeType: "pr",
     },
     {
       addLabels: ["renovate/container", "type/digest"],
@@ -67,6 +78,7 @@
       semanticCommitScope: "{{parentDir}}",
       semanticCommitType: "chore",
       automerge: true,
+      automergeType: "pr",
     },
     {
       description: "Disable digest pinning for regex managers in Dockerfile",
