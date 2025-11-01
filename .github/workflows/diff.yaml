@@ -19,6 +19,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Get Changed Files
         id: changed-files
         uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46
@@ -31,11 +32,13 @@ jobs:
           escape_json: false
       - name: Strip apps/ prefix
         id: strip-prefix
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          IMAGES=$( \
-              echo '${{ steps.changed-files.outputs.all_changed_files }}' \
-                  | jq --raw-output --compact-output 'map(sub("^apps/"; ""))' \
-          )
+          IMAGES=$(echo "${CHANGED_FILES}" | jq --raw-output --compact-output 'map(sub("^apps/"; ""))')
           echo "all_changed_files=${IMAGES}" >> "$GITHUB_OUTPUT"
       - name: List all changed files
-        run: echo '${{ steps.strip-prefix.outputs.all_changed_files }}' | jq
+        env:
+          OUTPUT: ${{ steps.strip-prefix.outputs.all_changed_files }}
+        run: |
+          echo "${OUTPUT}" | jq
