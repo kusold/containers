@@ -1,4 +1,4 @@
-FROM debian:trixie@sha256:57f263eea6ab2310ea26243215304cd726a85b8025fad882f8f30a43f0592f3c
+FROM debian:trixie@sha256:72547dd722cd005a8c2aa2079af9ca0ee93aad8e589689135feaed60b0a8c08d
 # Renovate doesn't recognize the date format
 # https://docs.renovatebot.com/modules/versioning/debian/
 # FROM debian:bookworm-20250203
