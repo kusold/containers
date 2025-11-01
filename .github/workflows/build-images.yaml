@@ -109,10 +109,7 @@ jobs:
 
           REGISTRY="${{ env.REGISTRY }}"
           OWNER="${{ github.repository_owner }}"
-          LABELS=$(cat <<'LABELS_EOF'
-${{ steps.meta.outputs.labels }}
-LABELS_EOF
-)
+          LABELS='${{ steps.meta.outputs.labels }}'
 
           {
             echo "version=${VERSION}"

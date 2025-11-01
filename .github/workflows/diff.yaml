@@ -33,16 +33,10 @@ jobs:
       - name: Strip apps/ prefix
         id: strip-prefix
         run: |
-          CHANGED_FILES=$(cat <<'CHANGED_EOF'
-${{ steps.changed-files.outputs.all_changed_files }}
-CHANGED_EOF
-)
+          CHANGED_FILES='${{ steps.changed-files.outputs.all_changed_files }}'
           IMAGES=$(echo "${CHANGED_FILES}" | jq --raw-output --compact-output 'map(sub("^apps/"; ""))')
           echo "all_changed_files=${IMAGES}" >> "$GITHUB_OUTPUT"
       - name: List all changed files
         run: |
-          OUTPUT=$(cat <<'OUTPUT_EOF'
-${{ steps.strip-prefix.outputs.all_changed_files }}
-OUTPUT_EOF
-)
+          OUTPUT='${{ steps.strip-prefix.outputs.all_changed_files }}'
           echo "${OUTPUT}" | jq
