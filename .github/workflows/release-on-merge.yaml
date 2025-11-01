@@ -11,16 +11,23 @@ concurrency:
   group: release-image
   cancel-in-progress: false
 
+permissions: {}
+
 jobs:
   diff:
+    permissions:
+      contents: read
     uses: kusold/containers/.github/workflows/diff.yaml@main
 
   build-images:
+    permissions:
+      contents: read
+      packages: write
     needs: ["diff"]
     if: ${{ !contains(needs.diff.outputs.matrix, '[]') }}
     uses: kusold/containers/.github/workflows/build-images.yaml@main
-    # uses: ./.github/workflows/build-images.yaml
-    secrets: inherit
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     with:
       matrix: "${{ needs.diff.outputs.matrix }}"
       publish: true

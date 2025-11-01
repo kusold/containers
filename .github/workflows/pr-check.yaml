@@ -10,22 +10,33 @@ concurrency:
   group: ${{ github.head_ref }}-pr-check
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
   lint:
-    # uses: kusold/containers/.github/workflows/lint.yaml@main
+    permissions:
+      contents: write
+      packages: read
+      statuses: write
     uses: ./.github/workflows/lint.yaml
-    secrets: inherit
+    secrets:
+      GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      GH_APP_ID: ${{ secrets.GH_APP_ID }}
 
   diff:
+    permissions:
+      contents: read
     uses: kusold/containers/.github/workflows/diff.yaml@main
-    # uses: ./.github/workflows/diff.yaml
 
   build-images:
+    permissions:
+      contents: read
+      packages: write
     needs: ["diff"]
     if: ${{ !contains(needs.diff.outputs.matrix, '[]') }}
     uses: kusold/containers/.github/workflows/build-images.yaml@main
-    # uses: ./.github/workflows/build-images.yaml
-    secrets: inherit
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     with:
       matrix: "${{ needs.diff.outputs.matrix }}"
       publish: false
