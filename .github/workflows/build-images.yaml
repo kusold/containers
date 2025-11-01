@@ -13,6 +13,9 @@ on:
         required: false
         type: boolean
         default: false
+    secrets:
+      GITHUB_TOKEN:
+        required: false
 
 env:
   # Use docker.io for Docker Hub if empty
