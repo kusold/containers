@@ -1,83 +1,151 @@
 {
-  $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: ["config:best-practices", ":semanticCommits", ":automergeDigest"],
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:best-practices',
+    ':semanticCommits',
+    ':automergeDigest',
+  ],
   customManagers: [
     {
-      customType: "regex",
-      description: "Update _VERSION variables in Dockerfiles",
-      fileMatch: ["(^|/|\\.)Dockerfile$", "(^|/)Dockerfile\\.[^/]*$"],
+      customType: 'regex',
+      description: 'Update _VERSION variables in Dockerfiles',
+      managerFilePatterns: [
+        '/(^|/|\\.)Dockerfile$/',
+        '/(^|/)Dockerfile\\.[^/]*$/',
+      ],
       matchStrings: [
-        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s(?:ENV|ARG) .+?_VERSION=(?<currentValue>.+?)\\s",
+        '# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s(?:ENV|ARG) .+?_VERSION=(?<currentValue>.+?)\\s',
       ],
     },
   ],
   packageRules: [
     {
-      matchUpdateTypes: ["minor", "patch"],
-      matchManagers: ["github-actions"],
-      matchCurrentVersion: "!/^0/",
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+      ],
+      matchManagers: [
+        'github-actions',
+      ],
+      matchCurrentVersion: '!/^0/',
       automerge: true,
     },
     {
-      addLabels: ["renovate/container", "type/major"],
-      additionalBranchPrefix: "{{parentDir}}-",
-      commitMessageExtra: " ( {{currentVersion}} → {{newVersion}} )",
-      commitMessagePrefix: "feat({{parentDir}})!: ",
-      commitMessageTopic: "{{depName}}",
-      labels: ["apps/{{parentDir}}"],
-      matchDatasources: ["docker", "github-releases"],
-      matchFileNames: ["apps/**/Dockerfile"],
-      matchUpdateTypes: ["major"],
+      addLabels: [
+        'renovate/container',
+        'type/major',
+      ],
+      additionalBranchPrefix: '{{parentDir}}-',
+      commitMessageExtra: ' ( {{currentVersion}} → {{newVersion}} )',
+      commitMessagePrefix: 'feat({{parentDir}})!: ',
+      commitMessageTopic: '{{depName}}',
+      labels: [
+        'apps/{{parentDir}}',
+      ],
+      matchDatasources: [
+        'docker',
+        'github-releases',
+      ],
+      matchFileNames: [
+        'apps/**/Dockerfile',
+      ],
+      matchUpdateTypes: [
+        'major',
+      ],
     },
     {
-      addLabels: ["renovate/container", "type/minor"],
-      additionalBranchPrefix: "{{parentDir}}-",
-      commitMessageExtra: "( {{currentVersion}} → {{newVersion}} )",
-      commitMessageTopic: "{{depName}}",
-      labels: ["apps/{{parentDir}}"],
-      matchDatasources: ["docker", "github-releases"],
-      matchFileNames: ["apps/**/Dockerfile"],
-      matchUpdateTypes: ["minor"],
-      semanticCommitScope: "{{parentDir}}",
-      semanticCommitType: "feat",
+      addLabels: [
+        'renovate/container',
+        'type/minor',
+      ],
+      additionalBranchPrefix: '{{parentDir}}-',
+      commitMessageExtra: '( {{currentVersion}} → {{newVersion}} )',
+      commitMessageTopic: '{{depName}}',
+      labels: [
+        'apps/{{parentDir}}',
+      ],
+      matchDatasources: [
+        'docker',
+        'github-releases',
+      ],
+      matchFileNames: [
+        'apps/**/Dockerfile',
+      ],
+      matchUpdateTypes: [
+        'minor',
+      ],
+      semanticCommitScope: '{{parentDir}}',
+      semanticCommitType: 'feat',
       automerge: true,
     },
     {
-      addLabels: ["renovate/container", "type/patch"],
-      additionalBranchPrefix: "{{parentDir}}-",
-      commitMessageExtra: "( {{currentVersion}} → {{newVersion}} )",
-      commitMessageTopic: "{{depName}}",
-      labels: ["apps/{{parentDir}}"],
-      matchDatasources: ["docker", "github-releases"],
-      matchFileNames: ["apps/**/Dockerfile"],
-      matchUpdateTypes: ["patch"],
-      semanticCommitScope: "{{parentDir}}",
-      semanticCommitType: "fix",
+      addLabels: [
+        'renovate/container',
+        'type/patch',
+      ],
+      additionalBranchPrefix: '{{parentDir}}-',
+      commitMessageExtra: '( {{currentVersion}} → {{newVersion}} )',
+      commitMessageTopic: '{{depName}}',
+      labels: [
+        'apps/{{parentDir}}',
+      ],
+      matchDatasources: [
+        'docker',
+        'github-releases',
+      ],
+      matchFileNames: [
+        'apps/**/Dockerfile',
+      ],
+      matchUpdateTypes: [
+        'patch',
+      ],
+      semanticCommitScope: '{{parentDir}}',
+      semanticCommitType: 'fix',
       automerge: true,
     },
     {
-      addLabels: ["renovate/container", "type/digest"],
-      additionalBranchPrefix: "{{parentDir}}-",
-      commitMessageExtra: "( {{currentVersion}} → {{newVersion}} )",
-      commitMessageTopic: "{{depName}}",
-      labels: ["apps/{{parentDir}}"],
-      matchDatasources: ["docker"],
-      matchFileNames: ["apps/**/Dockerfile"],
-      matchUpdateTypes: ["digest", "pinDigest"],
-      semanticCommitScope: "{{parentDir}}",
-      semanticCommitType: "chore",
+      addLabels: [
+        'renovate/container',
+        'type/digest',
+      ],
+      additionalBranchPrefix: '{{parentDir}}-',
+      commitMessageExtra: '( {{currentVersion}} → {{newVersion}} )',
+      commitMessageTopic: '{{depName}}',
+      labels: [
+        'apps/{{parentDir}}',
+      ],
+      matchDatasources: [
+        'docker',
+      ],
+      matchFileNames: [
+        'apps/**/Dockerfile',
+      ],
+      matchUpdateTypes: [
+        'digest',
+        'pinDigest',
+      ],
+      semanticCommitScope: '{{parentDir}}',
+      semanticCommitType: 'chore',
       automerge: true,
     },
     {
-      description: "Disable digest pinning for regex managers in Dockerfile",
-      matchManagers: ["custom.regex"],
-      matchDatasources: ["docker"],
+      description: 'Disable digest pinning for regex managers in Dockerfile',
+      matchManagers: [
+        'custom.regex',
+      ],
+      matchDatasources: [
+        'docker',
+      ],
       pinDigests: false,
     },
     {
-      description: "Disable digest pinning problematic Dockerfiles",
-      matchDatasources: ["docker"],
-      matchFileNames: ["apps/caddy/Dockerfile"],
+      description: 'Disable digest pinning problematic Dockerfiles',
+      matchDatasources: [
+        'docker',
+      ],
+      matchFileNames: [
+        'apps/caddy/Dockerfile',
+      ],
       pinDigests: false,
     },
   ],
