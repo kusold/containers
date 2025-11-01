@@ -31,9 +31,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          persist-credentials: false
       - name: Test
         run: |
-          echo ${{ matrix.name }}
+          echo "${{ matrix.name }}"
 
       # Allow for more platforms to be built
       - name: Set up QEMU
@@ -76,18 +78,19 @@ jobs:
         if: ${{ inputs.publish }}
         id: publish-tags
         run: |
-          set -x # Enable debug mode to see each command as it's executed
-          echo "Determing version for ${{ matrix.name }}"
+          set -x
+          NAME="${{ matrix.name }}"
+          echo "Determing version for ${NAME}"
 
-          UPPER_NAME=$(echo "${{ matrix.name }}" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
+          UPPER_NAME=$(echo "${NAME}" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
 
           echo "Looking for version with pattern: ARG ${UPPER_NAME}_VERSION="
-          VERSION=$(grep -oP "(?<=ARG ${UPPER_NAME}_VERSION=)[\"']?\K[^\"']*(?=[\"']?)" apps/${{ matrix.name }}/Dockerfile || true)
+          VERSION=$(grep -oP "(?<=ARG ${UPPER_NAME}_VERSION=)[\"']?\K[^\"']*(?=[\"']?)" "apps/${NAME}/Dockerfile" || true)
 
           if [ -z "$VERSION" ]; then
             echo "The version isn't set. Checking if the image is debian based"
 
-            VERSION=$(grep -m1 -oP '^(?!#).*FROM debian:\K[^[:space:]]*' apps/${{ matrix.name }}/Dockerfile || true)
+            VERSION=$(grep -m1 -oP '^(?!#).*FROM debian:\K[^[:space:]]*' "apps/${NAME}/Dockerfile" || true)
 
             if [ -z "$VERSION" ]; then
               echo "Error: Could not find version in Dockerfile"
@@ -104,49 +107,60 @@ jobs:
             MAJOR_MINOR_VERSION=$(echo $VERSION | cut -d. -f1,2)
           fi
 
+          REGISTRY="${{ env.REGISTRY }}"
+          OWNER="${{ github.repository_owner }}"
+          LABELS=$(cat <<'LABELS_EOF'
+${{ steps.meta.outputs.labels }}
+LABELS_EOF
+)
+
           {
             echo "version=${VERSION}"
             echo "major=${MAJOR_VERSION}"
             echo "major_minor=${MAJOR_MINOR_VERSION}"
 
             echo "tags<<EOF"
-            echo "${{ env.REGISTRY}}/${{github.repository_owner}}/${{ matrix.name }}:${MAJOR_VERSION}"
-            echo "${{ env.REGISTRY}}/${{github.repository_owner}}/${{ matrix.name }}:${MAJOR_MINOR_VERSION}"
-            echo "${{ env.REGISTRY}}/${{github.repository_owner}}/${{ matrix.name }}:${VERSION}"
+            echo "${REGISTRY}/${OWNER}/${NAME}:${MAJOR_VERSION}"
+            echo "${REGISTRY}/${OWNER}/${NAME}:${MAJOR_MINOR_VERSION}"
+            echo "${REGISTRY}/${OWNER}/${NAME}:${VERSION}"
             echo "EOF"
 
             echo "labels<<EOF"
-            echo "${{ steps.meta.outputs.labels }}"
+            echo "${LABELS}"
             echo "org.opencontainers.image.version=${VERSION}"
             echo "EOF"
 
           } >> $GITHUB_OUTPUT
 
+      - name: Set build context
+        id: build-context
+        run: |
+          echo "context=apps/${{ matrix.name }}" >> $GITHUB_OUTPUT
+          echo "tag=${{ matrix.name }}-${{ env.TEST_TAG }}" >> $GITHUB_OUTPUT
+
       - name: Build the Docker image
         id: build-and-push
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
-          context: apps/${{ matrix.name }}
+          context: ${{ steps.build-context.outputs.context }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          load: true # Outputs the built image so it can be used in other steps
-          tags: ${{ matrix.name }}-${{ env.TEST_TAG }}
+          load: true
+          tags: ${{ steps.build-context.outputs.tag }}
 
       - name: Test
         run: |
-          docker run --rm ${{matrix.name}}-${{ env.TEST_TAG }} ${{matrix.name}} --help
+          TAG="${{ steps.build-context.outputs.tag }}"
+          NAME="${{ matrix.name }}"
+          docker run --rm "${TAG}" "${NAME}" --help
 
-      # The linux/amd64 image is only built once in this workflow.
-      # The image is built once, and the following steps use the
-      # internal cache from the first Build and push step. The
-      # second Build and push step only builds linux/arm64.
       - name: Build and push
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
           platforms: linux/amd64,linux/arm64
           push: ${{ inputs.publish }}
-          context: apps/${{ matrix.name }}
+          context: ${{ steps.build-context.outputs.context }}
           tags: ${{ inputs.publish && steps.publish-tags.outputs.tags || steps.meta.outputs.tags }}
           labels: ${{ inputs.publish && steps.publish-tags.outputs.labels || steps.meta.outputs.labels }}
           cache-from: type=gha
