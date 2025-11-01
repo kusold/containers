@@ -1,6 +1,0 @@
----
-rules:
-  template-injection:
-    ignore:
-      - build-images.yaml:147
-      - build-images.yaml:166
