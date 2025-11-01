@@ -34,8 +34,10 @@ jobs:
         with:
           persist-credentials: false
       - name: Test
+        env:
+          MATRIX_NAME: ${{ matrix.name }}
         run: |
-          echo "${{ matrix.name }}"
+          echo "${MATRIX_NAME}"
 
       # Allow for more platforms to be built
       - name: Set up QEMU
@@ -73,13 +75,17 @@ jobs:
             org.opencontainers.image.url
             ${{ !inputs.publish && 'org.opencontainers.image.version' || '' }}
 
-      # Add this new step to extract version when publishing
       - name: Extract Version from Dockerfile
         if: ${{ inputs.publish }}
         id: publish-tags
+        env:
+          MATRIX_NAME: ${{ matrix.name }}
+          REGISTRY: ${{ env.REGISTRY }}
+          OWNER: ${{ github.repository_owner }}
+          LABELS: ${{ steps.meta.outputs.labels }}
         run: |
           set -x
-          NAME="${{ matrix.name }}"
+          NAME="${MATRIX_NAME}"
           echo "Determing version for ${NAME}"
 
           UPPER_NAME=$(echo "${NAME}" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
@@ -99,17 +105,13 @@ jobs:
 
             # The version is set to the debian version
             echo "Found debian version ${VERSION}"
-            MAJOR_VERSION=$(echo $VERSION | cut -d- -f1)  # gets 'bookworm'
-            MAJOR_MINOR_VERSION=$VERSION                 # same as full version
+            MAJOR_VERSION=$(echo $VERSION | cut -d- -f1)
+            MAJOR_MINOR_VERSION=$VERSION
           else
             # The version is specified as an arg
             MAJOR_VERSION=$(echo $VERSION | cut -d. -f1)
             MAJOR_MINOR_VERSION=$(echo $VERSION | cut -d. -f1,2)
           fi
-
-          REGISTRY="${{ env.REGISTRY }}"
-          OWNER="${{ github.repository_owner }}"
-          LABELS='${{ steps.meta.outputs.labels }}'
 
           {
             echo "version=${VERSION}"
@@ -131,9 +133,12 @@ jobs:
 
       - name: Set build context
         id: build-context
+        env:
+          MATRIX_NAME: ${{ matrix.name }}
+          TEST_TAG: ${{ env.TEST_TAG }}
         run: |
-          echo "context=apps/${{ matrix.name }}" >> $GITHUB_OUTPUT
-          echo "tag=${{ matrix.name }}-${{ env.TEST_TAG }}" >> $GITHUB_OUTPUT
+          echo "context=apps/${MATRIX_NAME}" >> $GITHUB_OUTPUT
+          echo "tag=${MATRIX_NAME}-${TEST_TAG}" >> $GITHUB_OUTPUT
 
       - name: Build the Docker image
         id: build-and-push
@@ -147,10 +152,11 @@ jobs:
           tags: ${{ steps.build-context.outputs.tag }}
 
       - name: Test
+        env:
+          TAG: ${{ steps.build-context.outputs.tag }}
+          MATRIX_NAME: ${{ matrix.name }}
         run: |
-          TAG="${{ steps.build-context.outputs.tag }}"
-          NAME="${{ matrix.name }}"
-          docker run --rm "${TAG}" "${NAME}" --help
+          docker run --rm "${TAG}" "${MATRIX_NAME}" --help
 
       - name: Build and push
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
