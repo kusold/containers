@@ -24,3 +24,13 @@ jobs:
     with:
       matrix: "${{ needs.diff.outputs.matrix }}"
       publish: true
+
+  scan-images:
+    needs: ["build-images"]
+    if: ${{ !contains(needs.diff.outputs.matrix, '[]') }}
+    uses: kusold/containers/.github/workflows/trivy-scan.yaml@main
+    secrets: inherit
+    permissions:
+      contents: read
+      packages: read
+      security-events: write
