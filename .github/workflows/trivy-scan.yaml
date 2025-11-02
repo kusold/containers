@@ -55,17 +55,17 @@ jobs:
           TAGS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             "https://ghcr.io/v2/${{ github.repository_owner }}/${{ matrix.image }}/tags/list" | \
             jq -r '.tags[]?' || echo "")
-          
+
           if [ -z "$TAGS" ]; then
             echo "No tags found for ${{ matrix.image }}"
             echo "found=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          
+
           # Get the most recent tag by sorting semver-style (best effort)
           # This will grab the highest version number
           NEWEST_TAG=$(echo "$TAGS" | sort -V | tail -n1)
-          
+
           echo "Found tags: $TAGS"
           echo "Using newest tag: $NEWEST_TAG"
           echo "tag=$NEWEST_TAG" >> "$GITHUB_OUTPUT"
