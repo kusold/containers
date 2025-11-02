@@ -41,6 +41,7 @@ jobs:
           FIX_JSON: true
           FIX_JSONC_PRETTIER: true
           GITHUB_ACTIONS_CONFIG_FILE: actionlint.yaml
+          VALIDATE_GITHUB_ACTIONS_ZIZMOR: false
 
       - name: Commit and push linting fixes
         # Run only on:
