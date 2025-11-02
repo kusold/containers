@@ -48,35 +48,49 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Get newest image tag
+        id: get-tag
+        run: |
+          # Query GHCR API for available tags
+          TAGS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://ghcr.io/v2/${{ github.repository_owner }}/${{ matrix.image }}/tags/list" | \
+            jq -r '.tags[]?' || echo "")
+          
+          if [ -z "$TAGS" ]; then
+            echo "No tags found for ${{ matrix.image }}"
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          
+          # Get the most recent tag by sorting semver-style (best effort)
+          # This will grab the highest version number
+          NEWEST_TAG=$(echo "$TAGS" | sort -V | tail -n1)
+          
+          echo "Found tags: $TAGS"
+          echo "Using newest tag: $NEWEST_TAG"
+          echo "tag=$NEWEST_TAG" >> "$GITHUB_OUTPUT"
+          echo "found=true" >> "$GITHUB_OUTPUT"
+
       - name: Run Trivy vulnerability scanner
+        if: steps.get-tag.outputs.found == 'true'
         uses: aquasecurity/trivy-action@f781cce5aab226378ee181d764ab90ea0be3cdd8 # 0.29.0
-        continue-on-error: true
-        id: trivy-scan
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.image }}:latest
+          image-ref: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.image }}:${{ steps.get-tag.outputs.tag }}
           format: "sarif"
           output: "trivy-results-${{ matrix.image }}.sarif"
           severity: "CRITICAL,HIGH,MEDIUM"
 
-      - name: Check if SARIF file exists
-        id: check-sarif
-        run: |
-          if [ -f "trivy-results-${{ matrix.image }}.sarif" ]; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Upload Trivy results to GitHub Security tab
+        if: steps.get-tag.outputs.found == 'true'
         uses: github/codeql-action/upload-sarif@v3
-        if: steps.check-sarif.outputs.exists == 'true'
         with:
           sarif_file: "trivy-results-${{ matrix.image }}.sarif"
           category: "trivy-${{ matrix.image }}"
 
       - name: Run Trivy vulnerability scanner (table format)
+        if: steps.get-tag.outputs.found == 'true'
         uses: aquasecurity/trivy-action@f781cce5aab226378ee181d764ab90ea0be3cdd8 # 0.29.0
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.image }}:latest
+          image-ref: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.image }}:${{ steps.get-tag.outputs.tag }}
           format: "table"
           severity: "CRITICAL,HIGH,MEDIUM"
