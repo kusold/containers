@@ -133,9 +133,15 @@ jobs:
           load: true # Outputs the built image so it can be used in other steps
           tags: ${{ matrix.name }}-${{ env.TEST_TAG }}
 
+      - name: Extract executable name from config
+        id: config
+        run: |
+          EXECUTABLE=$(grep -oP '(?<=executable: ).*' apps/${{ matrix.name }}/config.yaml)
+          echo "executable=${EXECUTABLE}" >> $GITHUB_OUTPUT
+
       - name: Test
         run: |
-          docker run --rm ${{matrix.name}}-${{ env.TEST_TAG }} ${{matrix.name}} --help
+          docker run --rm ${{matrix.name}}-${{ env.TEST_TAG }} ${{ steps.config.outputs.executable }} --help
 
       # The linux/amd64 image is only built once in this workflow.
       # The image is built once, and the following steps use the
