@@ -8,6 +8,7 @@ on:
     # Run nightly at 2 AM UTC
     - cron: "0 2 * * *"
   workflow_dispatch: # Allow manual triggering
+  workflow_call:
 
 env:
   REGISTRY: ghcr.io
