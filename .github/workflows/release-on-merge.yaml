@@ -26,7 +26,7 @@ jobs:
       publish: true
 
   scan-images:
-    needs: ["build-images"]
+    needs: ["diff", "build-images"]
     if: ${{ !contains(needs.diff.outputs.matrix, '[]') }}
     uses: kusold/containers/.github/workflows/trivy-scan.yaml@main
     secrets: inherit
