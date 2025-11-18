@@ -22,7 +22,7 @@ RUN curl --verbose --location --output shreddit.tar.gz https://github.com/andrew
     && ls -al /shreddit
 
 # checkov:skip=CKV_DOCKER_2:don't need a healthcheck for a cli tool
-FROM debian:bullseye-slim@sha256:75e0b7a6158b4cc911d4be07d9f6b8a65254eb8c58df14023c3da5c462335593
+FROM debian:bullseye-slim@sha256:530a3348fc4b5734ffe1a137ddbcee6850154285251b53c3425c386ea8fac77b
 COPY --from=builder --chown=nobody:nogroup /shreddit /shreddit
 USER nobody:nogroup
 ENV PATH="/shreddit:$PATH"
