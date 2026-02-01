@@ -143,6 +143,21 @@ jobs:
         run: |
           docker run --rm ${{matrix.name}}-${{ env.TEST_TAG }} ${{ steps.config.outputs.executable }} --help
 
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        with:
+          image-ref: "${{ matrix.name }}-${{ env.TEST_TAG }}"
+          format: "template"
+          template: "@/contrib/sarif.tpl"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH"
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: "trivy-results.sarif"
+        if: ${{ inputs.publish }}
+
       # The linux/amd64 image is only built once in this workflow.
       # The image is built once, and the following steps use the
       # internal cache from the first Build and push step. The
