@@ -1,5 +1,5 @@
 # renovate: datasource=github-releases packageName=andrewbanchich/shreddit versioning=semver-coerced
-ARG SHREDDIT_VERSION=1.1.8
+ARG SHREDDIT_VERSION=1.1.9
 
 FROM rust:1.93.1@sha256:80302520b7199f0504975bca59a914015e9fee088f759875dbbc238ca9509ee1 AS builder
 ARG SHREDDIT_VERSION
