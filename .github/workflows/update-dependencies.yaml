@@ -111,7 +111,7 @@ jobs:
           ls -R $cache_dir
 
       - name: Renovate Bot GitHub Action
-        uses: renovatebot/github-action@8d75b92f43899d483728e9a8a7fd44238020f6e6 # v46.1.2
+        uses: renovatebot/github-action@7b4b65bf31e07d4e3e51708d07700fb41bc03166 # v46.1.3
         with:
           token: "${{ steps.get_token.outputs.token }}"
           configurationFile: .github/renovate.json5
