@@ -77,7 +77,7 @@ jobs:
         id: publish-tags
         run: |
           set -x # Enable debug mode to see each command as it's executed
-          echo "Determing version for ${{ matrix.name }}"
+          echo "Determining version for ${{ matrix.name }}"
 
           UPPER_NAME=$(echo "${{ matrix.name }}" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
 

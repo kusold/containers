@@ -11,5 +11,5 @@ skip-check:
   - CKV2_GHA_1 # Ensure top-level permissions are not set to write-all
   - CKV_DOCKER_5 # Ensure update instructions are not use alone in the Dockerfile
   - CKV_DOCKER_9 # Ensure that APT isn't used
-  - CKV2_DOCKER_5 # Ensure that certificate validation isn't disabled with the PYTHONHTTPSVERIFY environmnet variable
+  - CKV2_DOCKER_5 # Ensure that certificate validation isn't disabled with the PYTHONHTTPSVERIFY environment variable
   - CKV2_DOCKER_10 # Ensure that packages with untrusted or missing signatures are not used by rpm via the '--nodigest', '--nosignature', '--noverify', or '--nofiledigest' options

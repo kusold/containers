@@ -57,7 +57,7 @@ jobs:
       # It is also possible to cache a higher level of the directory, but it has minimal benefit. While renovate execution
       # time gets faster, it also takes longer to upload the cache as it grows bigger.
       cache_dir: /tmp/renovate/cache/renovate/repository
-      # This can be manually changed to bust the cache if neccessary.
+      # This can be manually changed to bust the cache if necessary.
       cache_key: renovate-cache
     steps:
       - name: Get GitHub token
