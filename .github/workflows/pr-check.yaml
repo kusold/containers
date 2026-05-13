@@ -17,7 +17,7 @@ jobs:
     secrets: inherit
 
   diff:
-    uses: kusold/containers/.github/workflows/diff.yaml@main
+    uses: kusold/containers/.github/workflows/diff.yaml@5f1bc8f02c7217915f16e5b5fe9db53ee3a44e96 # main
     # uses: ./.github/workflows/diff.yaml
 
   build-images:
