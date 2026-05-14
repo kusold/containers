@@ -13,12 +13,12 @@ concurrency:
 
 jobs:
   diff:
-    uses: kusold/containers/.github/workflows/diff.yaml@6db50d37e37b6f8a89e7631dd1c705e1eb1f50bd # main
+    uses: kusold/containers/.github/workflows/diff.yaml@0b1ffa60dd8000a0d103e5b30a5662ab88f07231 # main
 
   build-images:
     needs: ["diff"]
     if: ${{ !contains(needs.diff.outputs.matrix, '[]') }}
-    uses: kusold/containers/.github/workflows/build-images.yaml@6db50d37e37b6f8a89e7631dd1c705e1eb1f50bd # main
+    uses: kusold/containers/.github/workflows/build-images.yaml@0b1ffa60dd8000a0d103e5b30a5662ab88f07231 # main
     # uses: ./.github/workflows/build-images.yaml
     secrets: inherit
     with:
@@ -28,7 +28,7 @@ jobs:
   scan-images:
     needs: ["diff", "build-images"]
     if: ${{ !contains(needs.diff.outputs.matrix, '[]') }}
-    uses: kusold/containers/.github/workflows/trivy-scan.yaml@6db50d37e37b6f8a89e7631dd1c705e1eb1f50bd # main
+    uses: kusold/containers/.github/workflows/trivy-scan.yaml@0b1ffa60dd8000a0d103e5b30a5662ab88f07231 # main
     secrets: inherit
     permissions:
       contents: read
