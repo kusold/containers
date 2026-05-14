@@ -70,6 +70,7 @@
       semanticCommitScope: "{{parentDir}}",
       semanticCommitType: "chore",
       automerge: true,
+      recreateWhen: "always",
     },
     {
       description: "Disable digest pinning for regex managers in Dockerfile",
