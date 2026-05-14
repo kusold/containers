@@ -84,5 +84,11 @@
       matchFileNames: ["apps/caddy/Dockerfile"],
       pinDigests: false,
     },
+    {
+      description: "Ignore self-referencing reusable workflows (kusold/containers)",
+      matchManagers: ["github-actions"],
+      matchDepNames: ["kusold/containers"],
+      enabled: false,
+    },
   ],
 }
