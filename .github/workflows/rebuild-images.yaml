@@ -24,23 +24,10 @@ permissions:
 
 jobs:
   discover-images:
-    name: Discover Images
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-
-      - name: Discover images from apps directory
-        id: set-matrix
-        run: |
-          images=$(find apps -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | jq -R -s -c 'split("\n")[:-1]')
-          echo "matrix=$images" >> "$GITHUB_OUTPUT"
-          echo "Found images: $images"
+    uses: kusold/containers/.github/workflows/discover-images.yaml@main
+    secrets: inherit
 
   build-images:
-    name: Rebuild All Images
     needs: [discover-images]
     uses: kusold/containers/.github/workflows/build-images.yaml@main
     secrets: inherit
@@ -49,7 +36,6 @@ jobs:
       publish: true
 
   scan-images:
-    name: Scan Rebuilt Images
     needs: [discover-images, build-images]
     uses: kusold/containers/.github/workflows/trivy-scan.yaml@main
     secrets: inherit
