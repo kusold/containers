@@ -1,0 +1,31 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: "Discover Images"
+
+on:
+  workflow_call:
+    outputs:
+      matrix:
+        description: "JSON array of image names found in the apps directory"
+        value: ${{ jobs.discover-images.outputs.matrix }}
+
+permissions:
+  contents: read
+
+jobs:
+  discover-images:
+    name: Discover Images
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Discover images from apps directory
+        id: set-matrix
+        run: |
+          images=$(find apps -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | jq -R -s -c 'split("\n")[:-1]')
+          echo "matrix=$images" >> "$GITHUB_OUTPUT"
+          echo "Found images: $images"
