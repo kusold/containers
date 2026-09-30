@@ -1,0 +1,43 @@
+# python3 + rclone on Alpine: a tools image for GitOps jobs that need a
+# real scripting language and cloud-storage moves. First consumer:
+# rockymtn's gdrive-archive CronJob — a python script reads a TOML drive
+# catalog and rclone-copies purchased Google Drive folders to TrueNAS.
+# The job script and catalog deliberately stay in the consumer's manifest
+# tree — this image only changes when the tools do.
+#
+# Versioning: GDRIVE_ARCHIVE_VERSION is the image's own semver, consumed
+# by the release workflow's tag derivation — bump the MINOR when a tool
+# version moves (rclone/python), the PATCH for base-image bumps or
+# rebuilds. Consumers pin tag + digest and let renovate follow.
+FROM alpine:3.22@sha256:5291449c3df73caf6ed85e649dec1b9e818b39a5d8c871e97afc13e9cd5e8fa8
+
+# The image's own semver — NOT a dependency pin; no renovate comment on
+# purpose. The release workflow greps this line for the published tags.
+ARG GDRIVE_ARCHIVE_VERSION=1.0.0
+
+# checkov:skip=CKV_DOCKER_2:healthcheck is not required (batch job tools image)
+
+# renovate: datasource=github-releases packageName=rclone/rclone
+ARG RCLONE_VERSION=1.75.1
+ARG TARGETARCH
+
+# python3 comes from the Alpine base, stdlib only — the consumer's script
+# parses TOML with tomllib (3.11+), no pip packages. rclone is pinned by
+# ARG and checksum-verified against the release's SHA256SUMS asset; no
+# exec of unverified bytes.
+RUN apk add --no-cache ca-certificates curl unzip python3 \
+    && curl -fsSL "https://github.com/rclone/rclone/releases/download/v${RCLONE_VERSION}/rclone-v${RCLONE_VERSION}-linux-${TARGETARCH}.zip" \
+        -o /tmp/rclone.zip \
+    && curl -fsSL "https://github.com/rclone/rclone/releases/download/v${RCLONE_VERSION}/SHA256SUMS" \
+        -o /tmp/rclone-SHA256SUMS \
+    && RCLONE_ZIP="rclone-v${RCLONE_VERSION}-linux-${TARGETARCH}.zip" \
+    && echo "$(awk -v f="${RCLONE_ZIP}" '$2 == f {print $1}' /tmp/rclone-SHA256SUMS)  /tmp/rclone.zip" \
+        | sha256sum -c - \
+    && unzip -j -o /tmp/rclone.zip "*/rclone" -d /usr/local/bin \
+    && chmod 0755 /usr/local/bin/rclone \
+    && rm -rf /tmp/* \
+    && python3 --version \
+    && rclone version | head -2
+
+USER nobody
+WORKDIR /data
