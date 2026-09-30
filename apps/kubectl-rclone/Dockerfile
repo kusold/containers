@@ -12,12 +12,12 @@ FROM alpine:3.24@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cab
 
 # The image's own semver — NOT a dependency pin; no renovate comment on
 # purpose. The release workflow greps this line for the published tags.
-ARG KUBECTL_RCLONE_VERSION=1.0.0
+ARG KUBECTL_RCLONE_VERSION=1.1.0
 
 # checkov:skip=CKV_DOCKER_2:healthcheck is not required (batch job tools image)
 
-# renovate: datasource=kubernetes packageName=kubectl
-ARG KUBECTL_VERSION=v1.36.3
+# renovate: datasource=github-releases packageName=kubernetes/kubernetes extractVersion=^v?(?<version>.*)$
+ARG KUBECTL_VERSION=v1.37.1
 # renovate: datasource=github-releases packageName=rclone/rclone
 ARG RCLONE_VERSION=1.75.1
 ARG TARGETARCH
