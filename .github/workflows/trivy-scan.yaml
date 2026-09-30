@@ -57,9 +57,16 @@ jobs:
             exit 0
           fi
 
-          # Get the most recent tag by sorting semver-style (best effort)
-          # This will grab the highest version number
-          NEWEST_TAG=$(echo "$TAGS" | sort -V | tail -n1)
+          # Prefer semver-shaped tags (v?X.Y[.Z...]) and pick the highest.
+          # Falls back to all tags when none match. This ignores legacy
+          # codename tags (e.g. curl's trixie-20260623) that sort above
+          # the semver ones under sort -V and resolve to a stale image.
+          SEMVER_TAGS=$(echo "$TAGS" | grep -E '^v?[0-9]+(\.[0-9]+)*$' || true)
+          if [ -n "$SEMVER_TAGS" ]; then
+            NEWEST_TAG=$(echo "$SEMVER_TAGS" | sort -V | tail -n1)
+          else
+            NEWEST_TAG=$(echo "$TAGS" | sort -V | tail -n1)
+          fi
 
           echo "Found tags: $TAGS"
           echo "Using newest tag: $NEWEST_TAG"
