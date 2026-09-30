@@ -2,8 +2,10 @@
 ARG ICLOUDPD_VERSION=1.32.3@sha256:af2bf40cb2c1d42051793b4c3c04c825950697d7fedcd12bd8455d6952395801
 
 FROM icloudpd/icloudpd:${ICLOUDPD_VERSION}
-RUN apk add --no-cache \
-    curl # Used in the notification scripts
+# Upgrade pre-installed packages (openssl/libcrypto ship with known CVEs in
+# the pinned upstream base) and add curl for the notification scripts.
+RUN apk upgrade && apk add --no-cache \
+    curl
 
 RUN adduser -D icloudpd
 USER icloudpd
