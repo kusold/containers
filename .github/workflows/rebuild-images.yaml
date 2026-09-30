@@ -1,0 +1,59 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: "Rebuild Images"
+
+# Rebuild and republish all images on a schedule so OS packages (apt/apk)
+# inside the images get refreshed with security fixes even when no
+# dependency bump lands. The nightly Trivy scan only alerts on published
+# tags, so without periodic rebuilds fixable findings accumulate forever.
+on:
+  schedule:
+    # Weekly, Sunday 06:00 UTC (Saturday night Mountain Time)
+    - cron: "0 6 * * 0"
+  workflow_dispatch: # Allow manual triggering
+
+# Serialize with release-on-merge so we never have two workflows
+# pushing the same image tags concurrently.
+concurrency:
+  group: release-image
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  discover-images:
+    name: Discover Images
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Discover images from apps directory
+        id: set-matrix
+        run: |
+          images=$(find apps -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | jq -R -s -c 'split("\n")[:-1]')
+          echo "matrix=$images" >> "$GITHUB_OUTPUT"
+          echo "Found images: $images"
+
+  build-images:
+    name: Rebuild All Images
+    needs: [discover-images]
+    uses: kusold/containers/.github/workflows/build-images.yaml@main
+    secrets: inherit
+    with:
+      matrix: "${{ needs.discover-images.outputs.matrix }}"
+      publish: true
+
+  scan-images:
+    name: Scan Rebuilt Images
+    needs: [discover-images, build-images]
+    uses: kusold/containers/.github/workflows/trivy-scan.yaml@main
+    secrets: inherit
+    permissions:
+      contents: read
+      packages: read
+      security-events: write
