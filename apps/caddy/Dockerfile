@@ -1,12 +1,9 @@
-# renovate: datasource=docker packageName=caddy versioning=docker
-ARG CADDY_VERSION=2.11.4
-
-FROM caddy:${CADDY_VERSION}-builder AS builder
+FROM caddy:2.11.4-builder@sha256:369218c81ca6d6af249981221b3a5c764d886dd5b058f51d144066de13f2418d AS builder
 
 RUN xcaddy build \
     --with github.com/tailscale/caddy-tailscale@fd3f49d73216641b9cbe9167bbb05250c0ffc6d6
 
 # checkov:skip=CKV_DOCKER_3:upstream image creates a non-root user
 # checkov:skip=CKV_DOCKER_2:upstream image creates healthcheck
-FROM caddy:${CADDY_VERSION}
+FROM caddy:2.11.4@sha256:0c994536bddb66445885237f1a5dcc1916bccea922661c76b4e9fc24061f9b52
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
