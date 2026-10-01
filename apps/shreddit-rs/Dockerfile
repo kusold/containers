@@ -22,7 +22,9 @@ RUN curl --verbose --location --output shreddit.tar.gz https://github.com/andrew
     && ls -al /shreddit
 
 # checkov:skip=CKV_DOCKER_2:don't need a healthcheck for a cli tool
-FROM debian:13@sha256:9cc080028c43b27d2074d63a5f9caf7166d731494965616c1a6d2827a004585c
+# The runtime base pin (tag + digest) is renovate-managed; the release
+# workflow derives the published tag (:13) from this same line.
+FROM ghcr.io/kusold/debian-base:13@sha256:a298b5f04c01dc95152c4749c96139001aaa2b5bf5b2f402a956f1dbcf30571f
 COPY --from=builder --chown=nobody:nogroup /shreddit /shreddit
 USER nobody:nogroup
 ENV PATH="/shreddit:$PATH"

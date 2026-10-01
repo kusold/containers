@@ -8,11 +8,11 @@
 # the release workflow's tag derivation — bump the MINOR when a tool version
 # moves (kubectl/rclone), the PATCH for base-image bumps or rebuilds.
 # Consumers pin tag + digest and let renovate follow.
-FROM alpine:3.24@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6
+FROM ghcr.io/kusold/alpine-base-runtime:3@sha256:7941a7dada72da6461b75b4acabd11d3716ff2cc909d7ee88cbe937e45260ced
 
 # The image's own semver — NOT a dependency pin; no renovate comment on
 # purpose. The release workflow greps this line for the published tags.
-ARG KUBECTL_RCLONE_VERSION=1.1.0
+ARG KUBECTL_RCLONE_VERSION=1.1.1
 
 # checkov:skip=CKV_DOCKER_2:healthcheck is not required (batch job tools image)
 
@@ -24,9 +24,9 @@ ARG TARGETARCH
 
 # Both downloads are checksum-verified: kubectl against dl.k8s.io's sidecar
 # .sha256, rclone against the release's SHA256SUMS asset. No exec of
-# unverified bytes.
-RUN apk add --no-cache ca-certificates curl unzip \
-    && curl -fsSL "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl" \
+# unverified bytes. ca-certificates, curl, and unzip come from the base
+# tier.
+RUN curl -fsSL "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl" \
         -o /usr/local/bin/kubectl \
     && curl -fsSL "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl.sha256" \
         -o /tmp/kubectl.sha256 \
