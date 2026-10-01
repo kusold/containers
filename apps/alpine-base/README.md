@@ -3,13 +3,15 @@
 Minimal shared Alpine base — upstream `alpine:3.24` with every OS package
 upgraded at build time, so security updates land in **one shared layer**
 beneath all Alpine-based images in this repository instead of N per-image
-upgrade layers. Patch the OS once here and every child image inherits it.
+upgrade layers. One patched layer on disk, and one place to fix a CVE for
+every child image.
 
 ## Tiers
 
-- `alpine-base` — every OS package upgraded, nothing else added.
-- `alpine-base-runtime` — `alpine-base` plus `ca-certificates`, `curl`, and
-  `unzip`.
+| Image                 | Contents                                           |
+| --------------------- | -------------------------------------------------- |
+| `alpine-base`         | upgraded OS packages only                          |
+| `alpine-base-runtime` | `alpine-base` + `ca-certificates`, `curl`, `unzip` |
 
 ## Versioning
 
@@ -23,27 +25,28 @@ it):
   moves the published tags to `:3`/`:3.26`.
 - The `3` → `4` major arrives as a review-required PR.
 
+Base and published tags therefore always move in the same renovate PR;
+there is no separate version to keep in sync.
+
 Weekly rebuilds republish the same tags with a new digest — the digest is
 the rebuild record, not the version.
 
 ## Consuming
 
-Pin the **MAJOR tag + digest** in the child Dockerfile:
+Child images pin the **MAJOR tag + digest**:
 
 ```dockerfile
 FROM ghcr.io/kusold/alpine-base:3@sha256:...
 ```
 
-Why the major and nothing tighter:
-
-- A `:3@digest` pin receives automerged digest-only PRs from Renovate, so
-  OS patches and Alpine minors flow in without editing the child's tag.
-- The `3` → `4` jump is the only update that waits for review.
-- `:3.24` exists but tracks the minor line — pinning it costs a tag-bump PR
-  in every child on each Alpine minor.
+Renovate's Docker versioning only proposes updates at the pinned tag's
+precision, so a `:3@digest` pin produces automerged digest-only PRs (plus a
+review-required major PR when Alpine 4 lands). `:3.24` exists but is a
+moving tag tied to the minor line — pinning it generates tag-bump PRs in
+every child on each Alpine minor; pin the major instead.
 
 ## Operations
 
-After the first publish, make the ghcr package public (Packages →
-kusold/alpine-base → settings). New packages start private, which silently
-breaks anonymous pulls and Renovate digest tracking.
+New ghcr packages are created **private** by default. After the first
+publish, flip the package to public (GitHub → Packages → kusold/alpine-base
+→ settings) or anonymous pulls and Renovate digest tracking silently break.
