@@ -1,0 +1,5 @@
+---
+executable: apt
+# Scheduled rebuilds must re-run package upgrades instead of replaying the
+# cached layer (which would repush an identical digest and notify nobody).
+no-cache: true

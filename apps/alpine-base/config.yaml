@@ -1,0 +1,7 @@
+---
+# apk --help exits 1 on apk-tools 3.x, which would fail CI's smoke test;
+# busybox --help exercises the core userspace instead.
+executable: busybox
+# Scheduled rebuilds must re-run package upgrades instead of replaying the
+# cached layer (which would repush an identical digest and notify nobody).
+no-cache: true
