@@ -3,6 +3,16 @@
 name: Get GitHub App token
 description: Mint an installation token for the CI GitHub App
 
+# The secrets context is not available inside composite action files,
+# so callers must pass these in explicitly.
+inputs:
+  private_key:
+    description: GitHub App private key
+    required: true
+  app_id:
+    description: GitHub App ID
+    required: true
+
 outputs:
   token:
     description: GitHub App installation token
@@ -15,5 +25,5 @@ runs:
       id: app-token
       uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
       with:
-        private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-        app-id: ${{ secrets.GH_APP_ID }}
+        private-key: ${{ inputs.private_key }}
+        app-id: ${{ inputs.app_id }}
