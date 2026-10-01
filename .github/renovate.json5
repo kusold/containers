@@ -73,6 +73,13 @@
       recreateWhen: "always",
     },
     {
+      description: "Group caddy builder and runtime image updates into one PR",
+      groupName: "caddy",
+      matchDatasources: ["docker"],
+      matchDepNames: ["caddy"],
+      matchFileNames: ["apps/caddy/Dockerfile"],
+    },
+    {
       description: "Disable digest pinning for regex managers in Dockerfile",
       matchManagers: ["custom.regex"],
       matchDatasources: ["docker"],
