@@ -9,11 +9,11 @@
 # by the release workflow's tag derivation — bump the MINOR when a tool
 # version moves (rclone/python), the PATCH for base-image bumps or
 # rebuilds. Consumers pin tag + digest and let renovate follow.
-FROM alpine:3.24@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6
+FROM ghcr.io/kusold/alpine-base-runtime:3@sha256:7941a7dada72da6461b75b4acabd11d3716ff2cc909d7ee88cbe937e45260ced
 
 # The image's own semver — NOT a dependency pin; no renovate comment on
 # purpose. The release workflow greps this line for the published tags.
-ARG GDRIVE_ARCHIVE_VERSION=1.0.0
+ARG GDRIVE_ARCHIVE_VERSION=1.0.1
 
 # checkov:skip=CKV_DOCKER_2:healthcheck is not required (batch job tools image)
 
@@ -21,11 +21,10 @@ ARG GDRIVE_ARCHIVE_VERSION=1.0.0
 ARG RCLONE_VERSION=1.75.1
 ARG TARGETARCH
 
-# python3 comes from the Alpine base, stdlib only — the consumer's script
-# parses TOML with tomllib (3.11+), no pip packages. rclone is pinned by
-# ARG and checksum-verified against the release's SHA256SUMS asset; no
-# exec of unverified bytes.
-RUN apk add --no-cache ca-certificates curl unzip python3 \
+# python3 stays here (the only consumer); ca-certificates, curl, and unzip
+# come from the base tier. rclone is pinned by ARG and checksum-verified
+# against the release's SHA256SUMS asset; no exec of unverified bytes.
+RUN apk add --no-cache python3 \
     && curl -fsSL "https://github.com/rclone/rclone/releases/download/v${RCLONE_VERSION}/rclone-v${RCLONE_VERSION}-linux-${TARGETARCH}.zip" \
         -o /tmp/rclone.zip \
     && curl -fsSL "https://github.com/rclone/rclone/releases/download/v${RCLONE_VERSION}/SHA256SUMS" \
