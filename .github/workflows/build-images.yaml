@@ -133,11 +133,15 @@ jobs:
           load: true # Outputs the built image so it can be used in other steps
           tags: ${{ matrix.name }}-${{ env.TEST_TAG }}
 
-      - name: Extract executable name from config
+      - name: Extract image config
         id: config
         run: |
           EXECUTABLE=$(grep -oP '(?<=executable: ).*' apps/${{ matrix.name }}/config.yaml)
           echo "executable=${EXECUTABLE}" >> $GITHUB_OUTPUT
+          # Base images set no-cache: true so scheduled rebuilds re-run
+          # package upgrades instead of replaying the cached layer.
+          NO_CACHE=$(grep -oP '(?<=no-cache: ).*' apps/${{ matrix.name }}/config.yaml || echo "false")
+          echo "no-cache=${NO_CACHE}" >> $GITHUB_OUTPUT
 
       - name: Test
         run: |
@@ -151,6 +155,7 @@ jobs:
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           platforms: linux/amd64,linux/arm64
+          no-cache: ${{ steps.config.outputs.no-cache == 'true' }}
           push: ${{ inputs.publish }}
           context: apps/${{ matrix.name }}
           tags: ${{ inputs.publish && steps.publish-tags.outputs.tags || steps.meta.outputs.tags }}
