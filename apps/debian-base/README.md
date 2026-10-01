@@ -15,11 +15,17 @@ child image.
 
 ## Versioning
 
-`DEBIAN_BASE_VERSION` is the image's own SemVer (the release workflow
-derives the published tags from it):
+`DEBIAN_BASE_VERSION` is the upstream `debian` tag + digest in one
+renovate-managed pin (the release workflow derives the published tag from
+it):
 
-- **major.minor** — tracks the Debian release (`13.0` = Debian 13).
-- **patch** — deliberate content changes.
+- Digest updates automerge while Debian 13 is current — the published `:13`
+  floats to the new digest.
+- The `13` → `14` major arrives as a review-required PR; merging it moves
+  the published tag to `:14`.
+
+Base and published tags therefore always move in the same renovate PR;
+there is no separate version to keep in sync.
 
 Weekly rebuilds republish the same tags with a new digest — the digest is
 the rebuild record, not the version.
@@ -34,8 +40,8 @@ FROM ghcr.io/kusold/debian-base:13@sha256:...
 
 Renovate's docker versioning only proposes updates at the pinned tag's
 precision, so a `:13@digest` pin produces automerged digest-only PRs (plus a
-review-required major PR when Debian 14 lands). Do not pin `:13.0` — every
-base patch bump would then generate tag-bump churn in every child.
+review-required major PR when Debian 14 lands). Pin the major only — more
+precise tags generate tag-bump churn in every child.
 
 ## Operations
 

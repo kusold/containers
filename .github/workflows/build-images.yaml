@@ -83,11 +83,15 @@ jobs:
 
           echo "Looking for version with pattern: ARG ${UPPER_NAME}_VERSION="
           VERSION=$(grep -oP "(?<=ARG ${UPPER_NAME}_VERSION=)[\"']?\K[^\"']*(?=[\"']?)" apps/${{ matrix.name }}/Dockerfile || true)
+          # Renovate-managed ARGs carry the digest inline (tag@sha256:...);
+          # published tags and the version label use the tag alone.
+          VERSION="${VERSION%%@*}"
 
           if [ -z "$VERSION" ]; then
             echo "The version isn't set. Checking if the image is debian based"
 
             VERSION=$(grep -m1 -oP '^(?!#).*FROM debian:\K[^[:space:]]*' apps/${{ matrix.name }}/Dockerfile || true)
+            VERSION="${VERSION%%@*}"
 
             if [ -z "$VERSION" ]; then
               echo "Error: Could not find version in Dockerfile"
