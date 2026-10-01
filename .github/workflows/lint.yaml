@@ -28,6 +28,9 @@ jobs:
       - name: Get GitHub token
         id: get_token
         uses: ./.github/actions/get-github-token
+        with:
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          app_id: ${{ secrets.GH_APP_ID }}
 
       - name: Super-linter
         uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
