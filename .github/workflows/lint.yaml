@@ -17,19 +17,17 @@ jobs:
       statuses: write
 
     steps:
-      - name: Get GitHub token
-        id: get_token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
-        with:
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          app-id: ${{ secrets.GH_APP_ID }}
-
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           # super-linter needs the full git history to get the
           # list of files that changed across commits
           fetch-depth: 0
+
+      # Must come after checkout: the action lives in this repo
+      - name: Get GitHub token
+        id: get_token
+        uses: ./.github/actions/get-github-token
 
       - name: Super-linter
         uses: super-linter/super-linter@4ce20838b8ab83717e78138c5b3a1407148e0918 # v8.7.0
