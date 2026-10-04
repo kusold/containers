@@ -6,7 +6,7 @@
 # digest updates automerge while the parent's :3 tag floats, and the
 # release workflow derives the published tag (:3) from this same value.
 # renovate: datasource=docker packageName=ghcr.io/kusold/alpine-base versioning=docker
-ARG ALPINE_BASE_RUNTIME_VERSION=3@sha256:79826763e02b5e760c1b7bffab3997f8786284f8200484525bde8400fce60048
+ARG ALPINE_BASE_RUNTIME_VERSION=3@sha256:bcbbd8ba85717ceff04aa9df7d09f3c76b82dc5def6004fe2a26cafe8f5fc842
 FROM ghcr.io/kusold/alpine-base:${ALPINE_BASE_RUNTIME_VERSION}
 
 # checkov:skip=CKV_DOCKER_3:base image - child images create their own non-root users
