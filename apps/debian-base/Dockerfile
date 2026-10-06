@@ -9,7 +9,7 @@
 # from this same value, so base and tags always move in the same PR with
 # nothing to sync by hand.
 # renovate: datasource=docker packageName=debian versioning=docker
-ARG DEBIAN_BASE_VERSION=13@sha256:9cc080028c43b27d2074d63a5f9caf7166d731494965616c1a6d2827a004585c
+ARG DEBIAN_BASE_VERSION=13@sha256:913f6706df59a68922d1dd08f78c2476560a8d367897200a6005b00e5f67c2d5
 FROM debian:${DEBIAN_BASE_VERSION}
 
 # checkov:skip=CKV_DOCKER_3:base image - child images create their own non-root users
