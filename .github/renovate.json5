@@ -1,6 +1,10 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: ["config:best-practices", ":semanticCommits", ":automergeDigest"],
+  // Let GitHub merge the moment required checks pass, instead of waiting
+  // for the next (delayed) hourly Renovate run. Requires "Allow auto-merge"
+  // in repo settings and a required check on main (see all-pr-checks job).
+  platformAutomerge: true,
   customManagers: [
     {
       customType: "regex",
@@ -61,7 +65,9 @@
     {
       addLabels: ["renovate/container", "type/digest"],
       additionalBranchPrefix: "{{parentDir}}-",
-      commitMessageExtra: "( {{currentVersion}} → {{newVersion}} )",
+      // Digest updates have no new version; newVersion renders empty
+      // ("( 13 → )"). Show the short digest instead.
+      commitMessageExtra: "( {{currentVersion}} → {{newDigestShort}} )",
       commitMessageTopic: "{{depName}}",
       labels: ["apps/{{parentDir}}"],
       matchDatasources: ["docker"],
@@ -71,6 +77,22 @@
       semanticCommitType: "chore",
       automerge: true,
       recreateWhen: "always",
+    },
+    {
+      description: "Group per-tier child digest updates into one PR (same dep + digest across apps)",
+      // Clear the per-app branch prefix so every app pinning the same tier
+      // combines into a single branch/PR instead of one PR per app.
+      additionalBranchPrefix: "",
+      matchDatasources: ["docker"],
+      matchDepNames: [
+        "ghcr.io/kusold/alpine-base",
+        "ghcr.io/kusold/alpine-base-runtime",
+        "ghcr.io/kusold/debian-base",
+        "ghcr.io/kusold/debian-base-runtime",
+      ],
+      matchFileNames: ["apps/**/Dockerfile"],
+      matchUpdateTypes: ["digest", "pinDigest"],
+      semanticCommitScope: "base-images",
     },
     {
       description: "Group caddy builder and runtime image updates into one PR",
