@@ -79,8 +79,7 @@
       recreateWhen: "always",
     },
     {
-      description:
-        "Group per-tier child digest updates into one PR (same dep + digest across apps)",
+      description: "Group per-tier child digest updates into one PR (same dep + digest across apps)",
       // Clear the per-app branch prefix so every app pinning the same tier
       // combines into a single branch/PR instead of one PR per app.
       additionalBranchPrefix: "",
