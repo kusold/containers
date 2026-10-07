@@ -1,7 +1,7 @@
 FROM caddy:2.11.6-builder@sha256:f5b1a66449d305280e559dba0ab9f7ce9a2a14c527c79d7c6fb48abc8f895818 AS builder
 
 RUN xcaddy build \
-    --with github.com/tailscale/caddy-tailscale@fd3f49d73216641b9cbe9167bbb05250c0ffc6d6
+    --with github.com/tailscale/caddy-tailscale@69a970c84556728bd7e66129154864fa652fc285
 
 # checkov:skip=CKV_DOCKER_3:upstream image creates a non-root user
 # checkov:skip=CKV_DOCKER_2:upstream image creates healthcheck
