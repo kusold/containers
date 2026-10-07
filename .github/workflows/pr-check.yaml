@@ -29,3 +29,24 @@ jobs:
     with:
       matrix: "${{ needs.diff.outputs.matrix }}"
       publish: false
+
+  # A fixed-name terminal job for branch protection to require: the
+  # build-images matrix is per-app and skipped entirely on non-image PRs,
+  # so no single build check can be a required status check. This job
+  # fails when any upstream job failed, giving GitHub's auto-merge one
+  # stable check to wait on for every PR.
+  all-pr-checks:
+    name: All PR checks
+    needs: ["lint", "diff", "build-images"]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail unless lint and diff passed and build passed or was skipped
+        run: |
+          echo "lint=${{ needs.lint.result }} diff=${{ needs.diff.result }} build-images=${{ needs.build-images.result }}"
+          test "${{ needs.lint.result }}" = "success"
+          test "${{ needs.diff.result }}" = "success"
+          case "${{ needs.build-images.result }}" in
+            success | skipped) ;;
+            *) exit 1 ;;
+          esac
