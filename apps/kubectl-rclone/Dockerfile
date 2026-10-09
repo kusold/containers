@@ -19,7 +19,7 @@ ARG KUBECTL_RCLONE_VERSION=1.1.1
 # renovate: datasource=github-tags packageName=kubernetes/kubernetes versioning=semver
 ARG KUBECTL_VERSION=v1.37.1
 # renovate: datasource=github-releases packageName=rclone/rclone
-ARG RCLONE_VERSION=1.75.1
+ARG RCLONE_VERSION=1.75.2
 ARG TARGETARCH
 
 # Both downloads are checksum-verified: kubectl against dl.k8s.io's sidecar
