@@ -18,7 +18,7 @@ ARG GDRIVE_ARCHIVE_VERSION=1.0.1
 # checkov:skip=CKV_DOCKER_2:healthcheck is not required (batch job tools image)
 
 # renovate: datasource=github-releases packageName=rclone/rclone
-ARG RCLONE_VERSION=1.75.1
+ARG RCLONE_VERSION=1.75.2
 ARG TARGETARCH
 
 # python3 stays here (the only consumer); ca-certificates, curl, and unzip
