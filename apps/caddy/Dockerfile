@@ -15,7 +15,7 @@ RUN xcaddy build \
     --with github.com/tailscale/caddy-tailscale@fd3f49d73216641b9cbe9167bbb05250c0ffc6d6
 
 # Default Caddyfile + welcome page, downloaded in the builder (distroless has
-# no shell or wget) and COPYied into the runtime below. Pinned to the same
+# no shell or wget) and copied into the runtime below. Pinned to the same
 # caddyserver/dist commit upstream's official image uses — content-addressed
 # by commit, which is exactly how upstream's Dockerfile verifies them.
 ARG DIST_COMMIT=33ae08ff08d168572df2956ed14fbc4949880d94
