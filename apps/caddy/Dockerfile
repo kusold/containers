@@ -9,7 +9,7 @@ ARG CADDY_VERSION=2.11.7
 # renovate: datasource=docker packageName=gcr.io/distroless/static-debian13 versioning=docker
 ARG DISTROLESS_STATIC_VERSION=nonroot@sha256:e2e927ec666bae08560abb3c55d0659eceabb657f56b6782ab500a9fc7f555e3
 
-FROM caddy:2.11.7-builder@sha256:b25f47453fa02f7e66c0828b4b1343658808b9000950b6825c4a1cb0c988f5f8 AS builder
+FROM caddy:2.11.7-builder@sha256:5b98e8a4c3d077585c5980b205cfcc9602d820675d5e0cfdbf5eeff939dc0b4a AS builder
 
 RUN xcaddy build \
     --with github.com/tailscale/caddy-tailscale@fd3f49d73216641b9cbe9167bbb05250c0ffc6d6
