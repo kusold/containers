@@ -7,7 +7,7 @@
 ARG CADDY_VERSION=2.11.7
 
 # renovate: datasource=docker packageName=gcr.io/distroless/static-debian13 versioning=docker
-ARG DISTROLESS_STATIC_VERSION=nonroot@sha256:d62067879de890a1def9da0e7766b7d20810a5e5555cef8506b752437d7a3e88
+ARG DISTROLESS_STATIC_VERSION=nonroot@sha256:18f4cc26c9ffa7f20a359298be7deadac5c607c8e03a02b8119f1a5fc2f82c99
 
 FROM caddy:2.11.7-builder@sha256:c2fc374fd352439d76e1777b28d97d9f6d9c1dd86116db9227460374d46097d5 AS builder
 
