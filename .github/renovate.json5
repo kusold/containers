@@ -17,6 +17,17 @@
         "# renovate: datasource=(?<datasource>[a-z-]+?)(?: depName=(?<depName>.+?))? packageName=(?<packageName>.+?)(?: versioning=(?<versioning>[a-z-]+?))?\\s(?:ENV|ARG) .+?_VERSION=(?<currentValue>.+?)\\s",
       ],
     },
+    {
+      customType: "regex",
+      description: "Update xcaddy plugin commit pins (branch heads) in Dockerfiles: plugin upstreams publish no tags or releases, so pins are commit SHAs tracked as git-refs digest updates (branch/currentValue from the hint comment, commit/currentDigest from the _COMMIT ARG)",
+      managerFilePatterns: [
+        "/(^|/|\\.)Dockerfile$/",
+        "/(^|/)Dockerfile\\.[^/]*$/",
+      ],
+      matchStrings: [
+        "# renovate: datasource=(?<datasource>git-refs) depName=(?<depName>.+?) packageName=(?<packageName>https://.+?) branch=(?<currentValue>.+?)\\sARG .+?_COMMIT=(?<currentDigest>[0-9a-f]{40})\\s",
+      ],
+    },
   ],
   packageRules: [
     {
@@ -73,6 +84,21 @@
       matchDatasources: ["docker"],
       matchFileNames: ["apps/**/Dockerfile"],
       matchUpdateTypes: ["digest", "pinDigest"],
+      semanticCommitScope: "{{parentDir}}",
+      semanticCommitType: "chore",
+      automerge: true,
+      recreateWhen: "always",
+    },
+    {
+      description: "Automerge xcaddy plugin commit pins (branch head digests)",
+      // git-refs pins have no version — like digest updates, show the short
+      // commit SHAs instead of "( → )" with an empty newVersion.
+      addLabels: ["renovate/container", "type/digest"],
+      commitMessageExtra: "( {{currentDigestShort}} → {{newDigestShort}} )",
+      commitMessageTopic: "{{depName}}",
+      labels: ["apps/{{parentDir}}"],
+      matchDatasources: ["git-refs"],
+      matchFileNames: ["apps/**/Dockerfile"],
       semanticCommitScope: "{{parentDir}}",
       semanticCommitType: "chore",
       automerge: true,
