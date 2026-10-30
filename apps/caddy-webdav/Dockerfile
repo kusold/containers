@@ -18,10 +18,13 @@ ARG DISTROLESS_STATIC_VERSION=nonroot@sha256:18f4cc26c9ffa7f20a359298be7deadac5c
 
 FROM caddy:2.11.7-builder@sha256:c4cd20eaa0b69112fd5d4f721ffc9671687e1d5d0b155c8620cf7546dbef94c0 AS builder
 
-# mholt/caddy-webdav publishes no releases or tags, so the plugin pin is the
-# master branch head commit. Renovate tracks it with the git-refs datasource:
-# the branch in this hint (currentValue) plus the commit in the ARG
-# (currentDigest), bumping the ARG whenever master moves.
+# mholt/caddy-webdav publishes no releases or tags (asked and declined
+# "for now" in mholt/caddy-webdav#59), so the plugin pin is the master
+# branch head commit. Renovate tracks it with the git-refs datasource: the
+# branch in this hint (currentValue) plus the commit in the ARG
+# (currentDigest), bumping the ARG whenever master moves. If upstream ever
+# tags releases, switch this hint to datasource=github-tags and rename the
+# ARG to *_VERSION — the other customManager picks that up unchanged.
 # renovate: datasource=git-refs depName=mholt/caddy-webdav packageName=https://github.com/mholt/caddy-webdav branch=master
 ARG CADDY_WEBDAV_COMMIT=fa2f366b0d75e54c2e381c0aefc3a8df8bf5794b
 

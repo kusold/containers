@@ -14,7 +14,9 @@ FROM caddy:2.11.7-builder@sha256:c4cd20eaa0b69112fd5d4f721ffc9671687e1d5d0b155c8
 # tailscale/caddy-tailscale publishes no releases or tags, so the plugin pin
 # is the main branch head commit. Renovate tracks it with the git-refs
 # datasource: the branch in this hint (currentValue) plus the commit in the
-# ARG (currentDigest), bumping the ARG whenever main moves.
+# ARG (currentDigest), bumping the ARG whenever main moves. If upstream ever
+# tags releases, switch this hint to datasource=github-tags and rename the
+# ARG to *_VERSION — the other customManager picks that up unchanged.
 # renovate: datasource=git-refs depName=tailscale/caddy-tailscale packageName=https://github.com/tailscale/caddy-tailscale branch=main
 ARG CADDY_TAILSCALE_COMMIT=de41b249af4fd2083612c3b2303197e92787d1c5
 
