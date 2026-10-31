@@ -44,10 +44,11 @@ RUN set -eux; \
 # stage-scoped, so it must be declared before the first FROM for the runtime
 # FROM below to expand it — and is renovate-managed; the published tags
 # derive from CADDY_VERSION above (upstream caddy bumps land via one grouped
-# renovate PR that updates it and the builder pin together). USER nonroot
-# (uid/gid 65532) cannot bind :80/:443 without the
-# NET_BIND_SERVICE capability or a high-port site config — a consumer-side
-# change.
+# grouped renovate PR that updates it and the builder pin together). USER
+# nonroot (uid/gid 65532) can still bind :80/:443: xcaddy caps the binary
+# with cap_net_bind_service in the builder stage and BuildKit's COPY
+# preserves the file capability, so non-root consumers need no cap_add
+# (verified on the published images with getcap).
 FROM gcr.io/distroless/static-debian13:${DISTROLESS_STATIC_VERSION}
 
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
