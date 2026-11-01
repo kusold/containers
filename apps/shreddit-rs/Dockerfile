@@ -8,7 +8,7 @@ ARG SHREDDIT_RS_VERSION=1.1.11
 # Distroless pin: ARGs are stage-scoped, so this must be declared before the
 # first FROM for the runtime FROM below to expand it.
 # renovate: datasource=docker packageName=gcr.io/distroless/cc-debian13 versioning=docker
-ARG DISTROLESS_CC_VERSION=nonroot@sha256:3ee00291cf386ec52a552e6a858d555debd74776eb4bfa53fa3df2cd6677515e
+ARG DISTROLESS_CC_VERSION=nonroot@sha256:08476c244888bfb425bae1ae4dd7c17f093e972aab8426883d97f3c6f280f7c1
 
 FROM rust:1.99.1@sha256:09027f873d45b8ecd1dc86f1fa13b7a62b875c961f017a0e331267b350430137 AS builder
 ARG SHREDDIT_RS_VERSION
