@@ -7,7 +7,7 @@
 # digest updates automerge while the parent's :13 tag floats, and the
 # release workflow derives the published tag (:13) from this same value.
 # renovate: datasource=docker packageName=ghcr.io/kusold/debian-base versioning=docker
-ARG DEBIAN_BASE_RUNTIME_VERSION=13@sha256:12934e3781c71f1a9748f4dc95074a260425555def580c8a83eec21193d42e8e
+ARG DEBIAN_BASE_RUNTIME_VERSION=13@sha256:062e42298bfb1f5fa347f216a19fe9a8f5c37e138e6c655da111f2ac53d1163e
 FROM ghcr.io/kusold/debian-base:${DEBIAN_BASE_RUNTIME_VERSION}
 
 # checkov:skip=CKV_DOCKER_3:base image - child images create their own non-root users
