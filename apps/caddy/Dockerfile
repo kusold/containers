@@ -9,7 +9,7 @@ ARG CADDY_VERSION=2.11.8
 # renovate: datasource=docker packageName=gcr.io/distroless/static-debian13 versioning=docker
 ARG DISTROLESS_STATIC_VERSION=nonroot@sha256:25ac8f0c3b2334a9eb05452266bd4697864a8c8ef0ef71e5e6480d7f92868329
 
-FROM caddy:2.11.8-builder@sha256:212168c3a069fb6a18ced9e817f974c8a5ef21a41d305bcdb66ec0bd416079ef AS builder
+FROM caddy:2.11.8-builder@sha256:d4eb070c36154bd2d4c94b40359a03c6168346d5af5404963c74691ab77fb63f AS builder
 
 # tailscale/caddy-tailscale publishes no releases or tags, so the plugin pin
 # is the main branch head commit. Renovate tracks it with the git-refs
