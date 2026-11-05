@@ -4,12 +4,12 @@
 # "caddy" in this file, so the groupName "caddy" rule in renovate.json5
 # bundles them into one PR and the tags can't drift from the binary inside.
 # renovate: datasource=docker packageName=caddy versioning=docker
-ARG CADDY_VERSION=2.11.7
+ARG CADDY_VERSION=2.11.8
 
 # renovate: datasource=docker packageName=gcr.io/distroless/static-debian13 versioning=docker
 ARG DISTROLESS_STATIC_VERSION=nonroot@sha256:25ac8f0c3b2334a9eb05452266bd4697864a8c8ef0ef71e5e6480d7f92868329
 
-FROM caddy:2.11.7-builder@sha256:c4cd20eaa0b69112fd5d4f721ffc9671687e1d5d0b155c8620cf7546dbef94c0 AS builder
+FROM caddy:2.11.8-builder@sha256:212168c3a069fb6a18ced9e817f974c8a5ef21a41d305bcdb66ec0bd416079ef AS builder
 
 # tailscale/caddy-tailscale publishes no releases or tags, so the plugin pin
 # is the main branch head commit. Renovate tracks it with the git-refs
