@@ -9,7 +9,7 @@
 # value — so base and tags always move together with nothing to sync by
 # hand.
 # renovate: datasource=docker packageName=alpine versioning=docker
-ARG ALPINE_BASE_VERSION=3.24@sha256:3f4d6b32e26703c6082839234f43769d5046b3ac7c910033911d1e71d8cd630a
+ARG ALPINE_BASE_VERSION=3.24@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf
 FROM alpine:${ALPINE_BASE_VERSION}
 
 # checkov:skip=CKV_DOCKER_3:base image - child images create their own non-root users
