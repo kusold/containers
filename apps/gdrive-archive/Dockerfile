@@ -9,7 +9,7 @@
 # by the release workflow's tag derivation — bump the MINOR when a tool
 # version moves (rclone/python), the PATCH for base-image bumps or
 # rebuilds. Consumers pin tag + digest and let renovate follow.
-FROM ghcr.io/kusold/alpine-base-runtime:3@sha256:54135506f56bd512f4d0a75223ec0d412dd559e8e9907717a0cfbce81d435795
+FROM ghcr.io/kusold/alpine-base-runtime:3@sha256:3f5587b386e2c4e8d70c66ad58e5878d5a13ec225b1adbbef49b611899cd9de3
 
 # The image's own semver — NOT a dependency pin; no renovate comment on
 # purpose. The release workflow greps this line for the published tags.
