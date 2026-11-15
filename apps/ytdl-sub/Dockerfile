@@ -1,5 +1,5 @@
 # renovate: datasource=docker packageName=ghcr.io/jmbannon/ytdl-sub versioning=docker
-ARG YTDL_SUB_VERSION=2026.11.12@sha256:dcb058a1c5d94aed7c0fe9e206eed84e0982771ae600155934f07e5ed7c71612
+ARG YTDL_SUB_VERSION=2026.11.15@sha256:9ac9e57ef40ca05a23768c91f6e6d1dc035ee440a1995d74fd0c7b2ab44bde86
 
 # checkov:skip=CKV_DOCKER_2:don't need a healthcheck for a cli tool
 FROM ghcr.io/jmbannon/ytdl-sub:${YTDL_SUB_VERSION}
