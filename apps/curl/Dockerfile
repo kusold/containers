@@ -5,7 +5,7 @@
 # dependency — digest updates automerge as the tier's :13 floats, and the
 # release workflow derives the published tag (:13) from this same line, so
 # published tags follow base majors automatically.
-FROM ghcr.io/kusold/debian-base-runtime:13@sha256:dd2fa8b035ddaaa58f111b14732e46e4cfb6039d7539339079d6aaf3df0a0a5a
+FROM ghcr.io/kusold/debian-base-runtime:13@sha256:b6654242650f3d5e160e1cee6a6a988a9b8232b5beb4bf34361bc606ea05c92a
 
 # checkov:skip=CKV_DOCKER_2:healthcheck is not required
 
