@@ -1,6 +1,6 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: ["config:best-practices", ":semanticCommits", ":automergeDigest"],
+  extends: ["local>kusold/renovate-config", ":semanticCommits", ":automergeDigest"],
   // Let GitHub merge the moment required checks pass, instead of waiting
   // for the next (delayed) hourly Renovate run. Requires "Allow auto-merge"
   // in repo settings and a required check on main (see all-pr-checks job).
