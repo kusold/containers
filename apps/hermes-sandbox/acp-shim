@@ -1,0 +1,10 @@
+#!/bin/sh
+# Wrapper around kagent's acp-shim: append model.base_url (rockymtn's
+# Agent Gateway) to the hermes config the controller's prelude just
+# wrote, then exec the real shim. See the Dockerfile for why.
+set -e
+CFG="$HOME/.hermes/config.yaml"
+if [ -f "$CFG" ] && ! grep -q 'base_url:' "$CFG"; then
+  printf '  base_url: "https://ai.svc.rockymtn.org/v1"\n' >> "$CFG"
+fi
+exec /usr/local/bin/acp-shim.real "$@"
