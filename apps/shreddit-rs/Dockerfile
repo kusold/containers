@@ -10,7 +10,7 @@ ARG SHREDDIT_RS_VERSION=1.1.11
 # renovate: datasource=docker packageName=gcr.io/distroless/cc-debian13 versioning=docker
 ARG DISTROLESS_CC_VERSION=nonroot@sha256:532c7a94f9e96ba9db75eb9388f4227751131c7cb0a411d1a8521af4096135de
 
-FROM rust:1.100.0@sha256:223cc32ddca8f3ee90c436dbc94b6b5f052ea7f9653c5201e9612f08ad7d21b8 AS builder
+FROM rust:1.100.0@sha256:b9e69ae596a5671059d6138ede95ed5ba70f74eacb35cfae37cefaee50326dd4 AS builder
 ARG SHREDDIT_RS_VERSION
 
 RUN mkdir -p /shreddit \
