@@ -17,7 +17,7 @@ ARG KUBECTL_RCLONE_VERSION=1.1.1
 # checkov:skip=CKV_DOCKER_2:healthcheck is not required (batch job tools image)
 
 # renovate: datasource=github-tags packageName=kubernetes/kubernetes versioning=semver
-ARG KUBECTL_VERSION=v1.37.2
+ARG KUBECTL_VERSION=v1.37.3
 # renovate: datasource=github-releases packageName=rclone/rclone
 ARG RCLONE_VERSION=1.76.0
 ARG TARGETARCH
