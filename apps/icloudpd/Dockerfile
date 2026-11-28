@@ -1,5 +1,5 @@
 # renovate: datasource=docker packageName=icloudpd/icloudpd versioning=docker
-ARG ICLOUDPD_VERSION=1.34.0@sha256:1aa2f97167ec49659c2ec760d3c4599418c519981d61c94d60012e50049ad2c7
+ARG ICLOUDPD_VERSION=1.35.0@sha256:ea674c058a416d2d35d93d58616ee9ce0bfd1f64df1a24aa1f4d0bd4e98bb487
 
 FROM icloudpd/icloudpd:${ICLOUDPD_VERSION}
 # Upgrade pre-installed packages (openssl/libcrypto ship with known CVEs in
